@@ -1,6 +1,6 @@
 breedFst = function(Freqs, theta = 0.01, N = 10000, ns = 10,
                     DNAtools = FALSE){
-    if(N<1000){
+    if(N < 1000){
         stop("N must be >= 1000")
     }
 
@@ -8,13 +8,13 @@ breedFst = function(Freqs, theta = 0.01, N = 10000, ns = 10,
         stop("ns must divide N into a whole number\tThat is the subpopulation sizes must be integers")
     }
 
-    if(theta <=0 || theta >= 0.5){
+    if(theta <= 0 || theta >= 0.5){
         stop("0 < theta < 0.5")
     }
 
     Ns = N / ns
 
-    nGen = ceiling(log(1 - theta) / log(1 - 1/(2*Ns)))
+    nGen = ceiling(log(1 - theta) / log(1 - 1 / (2 * Ns)))
     cat(paste("Breeding for", nGen, "generations\n"))
 
     f = unlist(Freqs$freqs)

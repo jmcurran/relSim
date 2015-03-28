@@ -1,0 +1,36 @@
+locusIBS = function(profMat){
+
+    ## profIbs = function(prof1, prof2){
+    ##     res = 0
+
+    ##     a1 = prof1[1]
+    ##     a2 = prof1[2]
+    ##     b1 = prof2[1]
+    ##     b2 = prof2[2]
+
+    ##     if(a1 == b1 && a2 == b2){
+    ##         res = 2
+    ##     }else if((a1 == b1) || (a2 == b1) || (a1 == b2) || (a2 == b2)){
+    ##         res = 1
+    ##     }else{
+    ##         res = 0
+    ##     }
+
+    ##     return(res)
+    ## }
+
+    N = nrow(profMat)
+    nc = ncol(profMat)
+
+    if(nc!=4)
+        stop("Wrong dimensions")
+
+    result = rep(0, N)
+    ## for(i in 1:N)
+    ##     result[i] = profIbs(profMat[i,1:2],profMat[i,3:4])
+
+    p = as.vector(t(profMat))
+    r = rep(0, N)
+    return(.C("locusIbs", profVec = as.integer(p), r = as.integer(r),
+              N = as.integer(N))$r)
+}

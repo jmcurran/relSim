@@ -1,0 +1,46 @@
+IBS = function(prof1, prof2, nLoci = length(prof1)/2, bPrint = FALSE){
+    results = .C("IBS", prof1 = as.integer(prof1),
+                        prof2 = as.integer(prof2),
+                        nLoci = as.integer(nLoci),
+                        bPrint = as.integer(bPrint),
+                        ibs = as.integer(0))
+    return(results$ibs)
+    ## count = function(x1, x2){
+    ##     res = 0
+
+    ##     a1 = x1[1]
+    ##     a2 = x1[2]
+    ##     b1 = x2[1]
+    ##     b2 = x2[2]
+
+    ##     if(a1 == b1 & a2 == b2){
+    ##         res = 2
+    ##     }else if((a1 == b1 & a2 != b2) | (a1 == b2 & a2 != b1) |
+    ##              (a1 != b1 & a2 == b2) | (a1 != b2 & a2 == b1)){
+    ##         res = 1
+    ##     }else{
+    ##         res = 0
+    ##     }
+
+    ##     return(res)
+    ## }
+
+    ## s = 0
+
+    ## for(i in 1:nLoci){
+    ##     m = count(prof1[i,], prof2[i,])
+    ##     s = s + m
+
+    ##     if(bPrint){
+    ##         cat(paste(prof1[i,], collapse = "/"),
+    ##             "\t",
+    ##             paste(prof2[i,], collapse = "/"),
+    ##             "\t",
+    ##             ifelse(m > 0, "TRUE", "FALSE"),
+    ##             "\t",
+    ##             m,"\n", sep = "")
+    ##     }
+    ## }
+
+    ## return(s)
+}

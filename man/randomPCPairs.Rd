@@ -1,0 +1,36 @@
+\name{randomPCPairs}
+\alias{randomPCPairs}
+\title{Generate one or more random parent/child pairs from a given set of
+  allele frequencies}
+\description{
+  Generates one or more pairs random parent/child pairs from a given set of
+  allele frequencies.
+}
+\usage{
+randomPCPairs(Freqs, BlockSize = 1)
+}
+\arguments{
+  \item{Freqs}{A list containing two lists labelled loci and freqs. The
+second list is a list of vectors containing the allele frequencies of
+each allele at each locus in the multiplex.}
+\item{BlockSize}{The number of pairs of profiles to generate}
+}
+\value{
+  A list of length \code{BlockSize}. Each element of the list has a
+  sublist containing two profiles called \code{parent} and \code{child}
+}
+\details{
+  The alleles are simply integers rather than the STR repeat
+  numbers. This speeds up computation immensely when calculating any of
+  the LRs or IBS.
+}
+\seealso{
+  randomSibPairs, randomProfilePairs
+}
+\examples{
+data(fbiCaucs)
+P = randomPCPairs(fbiCaucs)
+P$parent
+P$child
+}
+\author{James M. Curran}

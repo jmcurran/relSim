@@ -1,0 +1,8 @@
+print.population = function(Pop,...){
+    cat("Substructured population\n")
+    cat("------------------------\n")
+    cat(paste("Number of members:", Pop$N, "\n"))
+    cat(paste("Number of subpopulations", Pop$nSubpops, "\n"))
+    cat(paste("Number of loci:", Pop$nLoci, "\n"))
+    cat(paste("Expected level of coancestry (theta):", Pop$theta, "\n"))
+}

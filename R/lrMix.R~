@@ -1,0 +1,18 @@
+lrMix = function(profiles, freqs){
+    n = c(0,cumsum(sapply(freqs, length)))
+    f = unlist(freqs)
+    nLoci = length(freqs)
+    N  = length(profiles)
+    results = matrix(0, nrow = N, ncol = nLoci)
+
+    for(i in 1:N){
+        r = .C("LRmix", v = as.integer(profiles[[i]][[1]]),
+                        s = as.integer(pop[[i]][[2]]),
+                        nLoc = as.integer(nLoci), f = as.double(f),
+                        offset = as.integer(n),
+                        result = as.double(results[i,]))
+        results[i,] = r$result
+    }
+
+    return(results)
+}

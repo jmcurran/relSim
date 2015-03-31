@@ -5,3 +5,7 @@ rcpp_hello_world <- function() {
     .Call('relSim_rcpp_hello_world', PACKAGE = 'relSim')
 }
 
+randomProfiles <- function(listFreqs, nBlockSize) {
+    .Call('relSim_randomProfiles', PACKAGE = 'relSim', listFreqs, nBlockSize)
+}
+

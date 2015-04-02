@@ -17,7 +17,7 @@ randomChildrenC <- function(ProfParent, listFreqs, nBlockSize) {
     .Call('relSim_randomChildrenC', PACKAGE = 'relSim', ProfParent, listFreqs, nBlockSize)
 }
 
-maximizeLRPC <- function(ProfParent, ProfChild, listFreqs, nBlockSize) {
-    .Call('relSim_maximizeLRPC', PACKAGE = 'relSim', ProfParent, ProfChild, listFreqs, nBlockSize)
+maximizeLRPCC <- function(listFreqs, nBlockSize) {
+    .Call('relSim_maximizeLRPCC', PACKAGE = 'relSim', listFreqs, nBlockSize)
 }
 

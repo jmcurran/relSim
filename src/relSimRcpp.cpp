@@ -7,6 +7,98 @@ using namespace Rcpp;
 
 // For more on using Rcpp click the Help button on the editor toolbar
 
+double locusLRmix(IntegerVector::const_iterator ProfVic, IntegerVector::const_iterator ProfSus, 
+                  NumericVector Freq){ 
+  double dLR;
+  double dPa, dPb, dPc, dPd;
+  
+  dPa = dPb = dPc =  dPd = 0;
+  
+  if(pnProfVic[0] == pnProfVic[1]){ // hom vic aa
+    if(pnProfSus[0] == pnProfSus[1]){ // hom sus aa or bb
+      if(pnProfSus[0] == pnProfVic[0]){ // sus aa
+        // *nCase = 1;
+        dPa = pdFreq[pnProfVic[0] - 1];
+        dLR = 1 / (dPa * dPa);
+      }else{ // sus bb
+        // *nCase = 2;
+        dPa = pdFreq[pnProfVic[0] - 1];
+        dPb = pdFreq[pnProfSus[0] - 1];
+        dLR = 1 / (dPb * (2 * dPa + dPb));
+      }
+    }else{ // suspect ab, bc
+      if(pnProfSus[0] == pnProfVic[0] || pnProfSus[1] == pnProfVic[0]){ // sus ab
+        // *nCase = 4;
+        dPa =  pdFreq[pnProfVic[0] - 1];
+        dPb =  pdFreq[pnProfSus[pnProfSus[0] == pnProfVic[0] ? 1 : 0] - 1];
+        dLR = 1 / (dPb * (2 * dPa + dPb));
+      }else{ // suspect bc
+        // *nCase = 5;
+        dPb = pdFreq[pnProfSus[0] - 1];
+        dPc = pdFreq[pnProfSus[1] - 1];
+        dLR = 1/(2 * dPb * dPc);
+      }
+    }
+  }else{ // vic ab
+    if(pnProfSus[0] == pnProfSus[1]){ // hom sus aa or bb or cc
+      if(pnProfSus[0] == pnProfVic[0] || pnProfSus[0] == pnProfVic[1]){ // sus aa or bb
+        // *nCase = 5;
+        dPa = pdFreq[pnProfVic[0] - 1];
+        dPb = pdFreq[pnProfVic[1] - 1];
+        double dp = dPa + dPb;
+        dLR = 1 / (dp * dp);
+      }else{ // suspect cc
+        // *nCase = 6;
+        dPa = pdFreq[pnProfVic[0] - 1];
+        dPb = pdFreq[pnProfVic[1] - 1];
+        dPc = pdFreq[pnProfSus[0] - 1];
+        dLR = 1 / (dPc * (2 * (dPa + dPb) + dPc));
+      }
+    }else{ // sus ab, ac or bc or cd
+      if(pnProfSus[0] == pnProfVic[0] && pnProfSus[1] == pnProfVic[1]){ // sus ab
+        // *nCase = 7;
+        dPa = pdFreq[pnProfSus[0] - 1];
+        dPb = pdFreq[pnProfSus[1] - 1];
+        double dp = dPa + dPb;
+        dLR = 1 / (dp * dp);
+      }else if(pnProfSus[0] == pnProfVic[0] || pnProfSus[1] == pnProfVic[0]){ // sus ac 
+        // *nCase = 8;
+        dPa = pdFreq[pnProfVic[0] - 1];
+        dPb = pdFreq[pnProfVic[1] - 1];
+      
+        if(pnProfSus[0] == pnProfVic[0]){
+          dPc = pdFreq[pnProfSus[1] - 1];
+        }else{
+          dPc = pdFreq[pnProfSus[0] - 1];
+        }
+        dLR = 1 / (dPc * (2 * (dPa + dPb) + dPc));
+      }else if(pnProfSus[0] == pnProfVic[1] || pnProfSus[1] == pnProfVic[1]){ // sus bc
+        // *nCase = 9;
+        dPa = pdFreq[pnProfVic[0] - 1];
+        if(pnProfSus[0] == pnProfVic[1]){
+          dPb = pdFreq[pnProfSus[0] - 1];
+          dPc = pdFreq[pnProfSus[1] - 1];
+        }else{
+          dPb = pdFreq[pnProfSus[1] - 1];
+          dPc = pdFreq[pnProfSus[0] - 1];
+        }
+        dLR = 1 / (dPc * (2 * (dPa + dPb) + dPc));
+    }else{ // sus cd
+      // *nCase = 10;
+      dPc = pdFreq[pnProfSus[0] - 1];
+      dPd = pdFreq[pnProfSus[1] - 1];
+      dLR = 1 / (2 * dPc * dPd);
+    }
+  }
+}
+  //pdF[0] = dPa;
+  //pdF[1] = dPb;
+  //pdF[2] = dPc;
+  //pdF[3] = dPd;
+  *pdResult = dLR;
+}
+  
+
 // [[Rcpp::export]]
 IntegerVector randomProfilesC(List listFreqs, int nBlockSize){
   int nLoci = listFreqs.size();
@@ -158,7 +250,7 @@ IntegerVector randomChildrenC(IntegerVector ProfParent, List listFreqs, int nBlo
   return ProfChild;
 }
 
-double locusLRPCC(IntegerVector& ProfParent, IntegerVector& ProfChild, NumericVector& Freq, int nLoc){
+double locusLRPCC(IntegerVector::const_iterator ProfParent, IntegerVector::const_iterator ProfChild, NumericVector& Freq){
 	double dLR = 1;
 	
 	if(ProfChild[0] == ProfChild[1]){ // Child is aa
@@ -205,21 +297,17 @@ double locusLRPCC(IntegerVector& ProfParent, IntegerVector& ProfChild, NumericVe
   return(dLR);
 }
 
-double lrPC(IntegerVector ProfParent, IntegerVector ProfChild, List listFreqs, int nPos){
+double lrPCC(IntegerVector::const_iterator ProfParent, IntegerVector::const_iterator ProfChild, 
+            List listFreqs){
 	int nLoci = listFreqs.size();
 	int nLoc = 0;
 	double dLR = 1;
-	int nOffset = 0;
 	
 	while(dLR > 0 && nLoc < nLoci){
-		double llr;
-		
-
-		NumericVector Freqs = as<NumericVector>(listFreqs[nLoc]);
-		
-		locusLRPC(ProfParent, ProfChild, Freqs, nLoc, nPos);
-		
-		dLR *= llr;
+		int i1 = 2 * nLoc;
+		NumericVector Freqs = as<NumericVector>(listFreqs[nLoc]);	
+    
+		dLR *= locusLRPCC(ProfParent + i1, ProfChild + i1, Freqs);;
 		nLoc++;
 	}
 	
@@ -227,24 +315,21 @@ double lrPC(IntegerVector ProfParent, IntegerVector ProfChild, List listFreqs, i
 }
 
 // [[Rcpp::export]]
-double maximizeLRPC(IntegerVector ProfParent, IntegerVector ProfChild, 
-                    List listFreqs, int nBlockSize){
-  
-  double dMax;
+List maximizeLRPCC(List listFreqs, int nBlockSize){  
   int b;
   int nOffset;
+  int nLoci = listFreqs.size();
   
-  IntegerVector Prof1 = randomProfiles(listFreqs, nBlockSize);
-  IntegerVector Prof2 = randomChildren(Prof1, listFreqs, nBlockSize);
+  IntegerVector Prof1 = randomProfilesC(listFreqs, nBlockSize);
+  IntegerVector Prof2 = randomChildrenC(Prof1, listFreqs, nBlockSize);
   int iMax = 0;
+  double dMax = 0;
   
   for(b = 0; b < nBlockSize; b++){
     // calculate the LR
     
-    double lr = 0;
     nOffset = 2 * nLoci * b;
-    
-    lrPC(&pnProf1[nOffset], &pnProf2[nOffset], nLoci, pdFreqs, pnAlleles, &lr);
+    double lr = lrPCC(Prof1.begin() + nOffset, Prof2.begin() + nOffset, listFreqs);
     // update
     
     if(lr > dMax){
@@ -253,32 +338,19 @@ double maximizeLRPC(IntegerVector ProfParent, IntegerVector ProfChild,
     }
   }
   
-  int nLoc;
-  nOffset = 2*(*nLoci)*iMax;
+  nOffset = 2 *  nLoci * iMax;
   
-  for(nLoc = 0; nLoc < *nLoci; nLoc++){
+  List listResult;
+  
+  listResult["parent"] = IntegerVector(Prof1.begin() + nOffset, Prof1.begin() + nOffset + 2 * nLoci);
+  listResult["child"] = IntegerVector(Prof2.begin() + nOffset, Prof2.begin() + nOffset + 2 * nLoci);
+  /*for(nLoc = 0; nLoc < nLoci; nLoc++){
     int i1 = 2*nLoc;
     pnProfParent[i1] = pnProf1[nOffset + i1];
     pnProfParent[i1+1] = pnProf1[nOffset + i1 + 1];
     pnProfChild[i1] = pnProf2[nOffset + i1];
     pnProfChild[i1+1] = pnProf2[nOffset + i1 + 1];
-  }
+  }*/
   
-  
-  delete [] pnProf1;
-  delete [] pnProf2;
-}
-
-
-void f1(vector<double>& x){
-	cout << x.size() endl;
-}
-
-void f2(void){
-	double z[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
-	vector<double> y(z, z + 10);
-	
-	for(int i = 0; i < 10; i++)
-		f1(y+i);
-	
+  return listResult;
 }

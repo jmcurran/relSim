@@ -53,17 +53,15 @@ BEGIN_RCPP
     return __result;
 END_RCPP
 }
-// maximizeLRPC
-double maximizeLRPC(IntegerVector ProfParent, IntegerVector ProfChild, List listFreqs, int nBlockSize);
-RcppExport SEXP relSim_maximizeLRPC(SEXP ProfParentSEXP, SEXP ProfChildSEXP, SEXP listFreqsSEXP, SEXP nBlockSizeSEXP) {
+// maximizeLRPCC
+List maximizeLRPCC(List listFreqs, int nBlockSize);
+RcppExport SEXP relSim_maximizeLRPCC(SEXP listFreqsSEXP, SEXP nBlockSizeSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
-    Rcpp::traits::input_parameter< IntegerVector >::type ProfParent(ProfParentSEXP);
-    Rcpp::traits::input_parameter< IntegerVector >::type ProfChild(ProfChildSEXP);
     Rcpp::traits::input_parameter< List >::type listFreqs(listFreqsSEXP);
     Rcpp::traits::input_parameter< int >::type nBlockSize(nBlockSizeSEXP);
-    __result = Rcpp::wrap(maximizeLRPC(ProfParent, ProfChild, listFreqs, nBlockSize));
+    __result = Rcpp::wrap(maximizeLRPCC(listFreqs, nBlockSize));
     return __result;
 END_RCPP
 }

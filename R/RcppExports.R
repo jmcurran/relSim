@@ -5,7 +5,19 @@ rcpp_hello_world <- function() {
     .Call('relSim_rcpp_hello_world', PACKAGE = 'relSim')
 }
 
-randomProfiles <- function(listFreqs, nBlockSize) {
-    .Call('relSim_randomProfiles', PACKAGE = 'relSim', listFreqs, nBlockSize)
+randomProfilesC <- function(listFreqs, nBlockSize) {
+    .Call('relSim_randomProfilesC', PACKAGE = 'relSim', listFreqs, nBlockSize)
+}
+
+randomSibsC <- function(ProfSib1, listFreqs, nBlockSize) {
+    .Call('relSim_randomSibsC', PACKAGE = 'relSim', ProfSib1, listFreqs, nBlockSize)
+}
+
+randomChildrenC <- function(ProfParent, listFreqs, nBlockSize) {
+    .Call('relSim_randomChildrenC', PACKAGE = 'relSim', ProfParent, listFreqs, nBlockSize)
+}
+
+maximizeLRPC <- function(ProfParent, ProfChild, listFreqs, nBlockSize) {
+    .Call('relSim_maximizeLRPC', PACKAGE = 'relSim', ProfParent, ProfChild, listFreqs, nBlockSize)
 }
 

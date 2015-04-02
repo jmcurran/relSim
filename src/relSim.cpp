@@ -1,155 +1,6 @@
 extern "C" {
-  void locusLRmix(int *pnProfVic, int *pnProfSus, double *pdFreq, 
-  double *pdResult){ 
-    // double *pdF, int *nCase, double *pdResult){
-    double dLR;
-    double dPa, dPb, dPc, dPd;
-    
-    dPa = dPb = dPc =  dPd = 0;
-    
-    if(pnProfVic[0] == pnProfVic[1]){ // hom vic aa
-    if(pnProfSus[0] == pnProfSus[1]){ // hom sus aa or bb
-    if(pnProfSus[0] == pnProfVic[0]){ // sus aa
-    // *nCase = 1;
-    dPa = pdFreq[pnProfVic[0] - 1];
-    dLR = 1 / (dPa * dPa);
-    }else{ // sus bb
-    // *nCase = 2;
-    dPa = pdFreq[pnProfVic[0] - 1];
-    dPb = pdFreq[pnProfSus[0] - 1];
-    dLR = 1 / (dPb * (2 * dPa + dPb));
-    }
-    }else{ // suspect ab, bc
-    if(pnProfSus[0] == pnProfVic[0] || pnProfSus[1] == pnProfVic[0]){ // sus ab
-    // *nCase = 4;
-    dPa =  pdFreq[pnProfVic[0] - 1];
-    dPb =  pdFreq[pnProfSus[pnProfSus[0] == pnProfVic[0] ? 1 : 0] - 1];
-    dLR = 1 / (dPb * (2 * dPa + dPb));
-    }else{ // suspect bc
-    // *nCase = 5;
-    dPb = pdFreq[pnProfSus[0] - 1];
-    dPc = pdFreq[pnProfSus[1] - 1];
-    dLR = 1/(2 * dPb * dPc);
-    }
-    }
-    }else{ // vic ab
-    if(pnProfSus[0] == pnProfSus[1]){ // hom sus aa or bb or cc
-    if(pnProfSus[0] == pnProfVic[0] || pnProfSus[0] == pnProfVic[1]){ // sus aa or bb
-    // *nCase = 5;
-    dPa = pdFreq[pnProfVic[0] - 1];
-    dPb = pdFreq[pnProfVic[1] - 1];
-    double dp = dPa + dPb;
-    dLR = 1 / (dp * dp);
-    }else{ // suspect cc
-    // *nCase = 6;
-    dPa = pdFreq[pnProfVic[0] - 1];
-    dPb = pdFreq[pnProfVic[1] - 1];
-    dPc = pdFreq[pnProfSus[0] - 1];
-    dLR = 1 / (dPc * (2 * (dPa + dPb) + dPc));
-    }
-    }else{ // sus ab, ac or bc or cd
-    if(pnProfSus[0] == pnProfVic[0] && pnProfSus[1] == pnProfVic[1]){ // sus ab
-    // *nCase = 7;
-    dPa = pdFreq[pnProfSus[0] - 1];
-    dPb = pdFreq[pnProfSus[1] - 1];
-    double dp = dPa + dPb;
-    dLR = 1 / (dp * dp);
-    }else if(pnProfSus[0] == pnProfVic[0] || pnProfSus[1] == pnProfVic[0]){ // sus ac 
-    // *nCase = 8;
-    dPa = pdFreq[pnProfVic[0] - 1];
-    dPb = pdFreq[pnProfVic[1] - 1];
-    
-    if(pnProfSus[0] == pnProfVic[0]){
-      dPc = pdFreq[pnProfSus[1] - 1];
-    }else{
-      dPc = pdFreq[pnProfSus[0] - 1];
-    }
-    dLR = 1 / (dPc * (2 * (dPa + dPb) + dPc));
-    }else if(pnProfSus[0] == pnProfVic[1] || pnProfSus[1] == pnProfVic[1]){ // sus bc
-    // *nCase = 9;
-    dPa = pdFreq[pnProfVic[0] - 1];
-    if(pnProfSus[0] == pnProfVic[1]){
-      dPb = pdFreq[pnProfSus[0] - 1];
-      dPc = pdFreq[pnProfSus[1] - 1];
-    }else{
-      dPb = pdFreq[pnProfSus[1] - 1];
-      dPc = pdFreq[pnProfSus[0] - 1];
-    }
-    dLR = 1 / (dPc * (2 * (dPa + dPb) + dPc));
-    }else{ // sus cd
-    // *nCase = 10;
-    dPc = pdFreq[pnProfSus[0] - 1];
-    dPd = pdFreq[pnProfSus[1] - 1];
-    dLR = 1 / (2 * dPc * dPd);
-    }
-    }
-    }
-    //pdF[0] = dPa;
-    //pdF[1] = dPb;
-    //pdF[2] = dPc;
-    //pdF[3] = dPd;
-    *pdResult = dLR;
-  }
   
-  void profIbs(int *pnProf, int *nResult){
-    *nResult = 0;
-    
-    int nA1 = pnProf[0];
-    int nA2 = pnProf[1];
-    int nB1 = pnProf[2];
-    int nB2 = pnProf[3];
-    
-    if(nA1 == nB1 && nA2 == nB2){
-      *nResult = 2;
-    }else if((nA1 == nB1) || (nA2 == nB1) || (nA1 == nB2) || (nA2 == nB2)){
-      *nResult = 1;
-    } // else *nResult is zero
-  }
   
-  void LRmix(int *pnProfVic, int *pnProfSus, int *nLoci, double *pdFreqs,
-  int *pnOffsets, double *pdLocusLRs){
-    int i;
-    
-    for(i = 0; i < *nLoci; i++){
-      locusLRmix(&pnProfVic[2*i], &pnProfSus[2*i], &pdFreqs[pnOffsets[i]],
-      &pdLocusLRs[i]);
-    }
-  }
-  
-  void locusIbs(int *pnProfMat, int *pnResult, int *pN){
-    
-    // assumes pnProfMat is a vector of length 4*pN
-    
-    int i;
-    for(i = 0; i < *pN; i++){
-      int i1 = 4*i;
-      int r;
-      profIbs(&pnProfMat[i1], &r);
-      pnResult[i] = r;
-    }
-  }
-  
-  void IBS(int *pnProf1, int *pnProf2, int *nLoci, int *nResult){
-    int s = 0;
-    int i;
-    int *p = new int[4];
-    
-    for(i = 0; i < *nLoci; i++){
-      int m;
-      int i1 = 2*i;
-      p[0] = pnProf1[i1];
-      p[1] = pnProf1[i1+1];
-      p[2] = pnProf2[i1];
-      p[3] = pnProf2[i1+1];
-      
-      profIbs(p, &m);
-      s +=  m;
-    }
-    
-    delete [] p;
-    
-    *nResult = s;
-  }
   
   void locusLRSib(int *pnProfSib1, int *pnProfSib2, double *pdFreq, double *pdResult){
     double dLR = 0;
@@ -324,18 +175,6 @@ extern "C" {
     *pdResult = dProd;
   }
   
-  int randAllele(double *pdFreqs, double dU){
-    double dSum = pdFreqs[0];
-    int nA = 0;
-    
-    while(dU > dSum){
-      nA++;
-      dSum += pdFreqs[nA];
-    }
-    
-    return nA + 1;
-  }
-  
   
   void blockStatCounts(int *pnProf1, int *pnProf2, int *nLoci, int *nProf,
   double *pdFreq, int *pnAlleles,
@@ -395,7 +234,7 @@ extern "C" {
       int *pProf2 = &pnProf2[nOffset];
       int nIBS;
       
-      IBS(pProf1, pProf2, nLoci, &nIBS);
+      IBSC(pProf1, pProf2, nLoci, &nIBS);
       
       if(bFalseNeg){
         for(j = 0; j < *nNumResults; j++){
@@ -418,7 +257,7 @@ extern "C" {
       int nIBS;
       
       lrSib(pProf1, pProf2, nLoci, pdFreq, pnAlleles, &dLRSib);
-      IBS(pProf1, pProf2, nLoci, &nIBS);
+      IBSC(pProf1, pProf2, nLoci, &nIBS);
       
       if(bFalseNeg){
         for(j = 0; j < *nNumResults; j++){
@@ -441,7 +280,7 @@ extern "C" {
       int nIBS;
       
       lrPC(pProf1, pProf2, nLoci, pdFreq, pnAlleles, &dLRPC);
-      IBS(pProf1, pProf2, nLoci, &nIBS);
+      IBSC(pProf1, pProf2, nLoci, &nIBS);
       
       if(bFalseNeg){
         for(j = 0; j < *nNumResults; j++){
@@ -460,58 +299,7 @@ extern "C" {
     }
   }
   
-  void blockStats(int *pnProf1, int *pnProf2, int *nLoci, int *nProf,
-  double *pdFreq, int *pnAlleles, int *nCode,
-  int *pnIBS, double *pdLRSib, double *pdLRPC){
-    
-    int i;
-    
-    if(*nCode == 1){ // lrSib only
-    for(i = 0; i < (*nProf); i++){
-      int nOffset = 2*(*nLoci)*i;
-      int *pProf1 = &pnProf1[nOffset];
-      int *pProf2 = &pnProf2[nOffset];
-      
-      lrSib(pProf1, pProf2, nLoci, pdFreq, pnAlleles, &pdLRSib[i]);
-    }
-    }else if(*nCode == 2){ //lrPC only
-    for(i = 0; i < (*nProf); i++){
-      int nOffset = 2*(*nLoci)*i;
-      int *pProf1 = &pnProf1[nOffset];
-      int *pProf2 = &pnProf2[nOffset];
-      
-      lrPC(pProf1, pProf2, nLoci, pdFreq, pnAlleles, &pdLRPC[i]);
-    }
-    }else if(*nCode == 3){ // ibs only
-    for(i = 0; i < (*nProf); i++){
-      int nOffset = 2*(*nLoci)*i;
-      int *pProf1 = &pnProf1[nOffset];
-      int *pProf2 = &pnProf2[nOffset];
-      
-      IBS(pProf1, pProf2, nLoci, &pnIBS[i]);
-    }
-    }else if(*nCode == 4){ // lrSib and lrPC
-    for(i = 0; i < (*nProf); i++){
-      int nOffset = 2*(*nLoci)*i;
-      int *pProf1 = &pnProf1[nOffset];
-      int *pProf2 = &pnProf2[nOffset];
-      
-      lrSib(pProf1, pProf2, nLoci, pdFreq, pnAlleles, &pdLRSib[i]);
-      lrPC(pProf1, pProf2, nLoci, pdFreq, pnAlleles, &pdLRPC[i]);
-      
-    }
-    }else if(*nCode == 5){ // lrSib, lrPC and ibs
-    for(i = 0; i < (*nProf); i++){
-      int nOffset = 2*(*nLoci)*i;
-      int *pProf1 = &pnProf1[nOffset];
-      int *pProf2 = &pnProf2[nOffset];
-      
-      lrSib(pProf1, pProf2, nLoci, pdFreq, pnAlleles, &pdLRSib[i]);
-      lrPC(pProf1, pProf2, nLoci, pdFreq, pnAlleles, &pdLRPC[i]);
-      IBS(pProf1, pProf2, nLoci, &pnIBS[i]);
-    }
-    }
-  }
+
   
 
 }

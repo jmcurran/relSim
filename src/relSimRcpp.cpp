@@ -1,101 +1,155 @@
 #include <Rcpp.h>
 using namespace Rcpp;
 
-// Below is a simple example of exporting a C++ function to R. You can
-// source this function into an R session using the Rcpp::sourceCpp 
-// function (or via the Source button on the editor toolbar)
+int profIbsC(IntegerVector::const_iterator Prof){
+  int nResult = 0;
+  
+  int nA1 = pnProf[0];
+  int nA2 = pnProf[1];
+  int nB1 = pnProf[2];
+  int nB2 = pnProf[3];
+  
+  if(nA1 == nB1 && nA2 == nB2){
+    *nResult = 2;
+  }else if((nA1 == nB1) || (nA2 == nB1) || (nA1 == nB2) || (nA2 == nB2)){
+    *nResult = 1;
+  } // else *nResult is zero
+  
+  return nResult;
+}
 
-// For more on using Rcpp click the Help button on the editor toolbar
+NumericVector LRmixC(IntegerVecotr ProfVic, IntegerVector ProfSus, List listFreqs){
+  int i;
+  int nLoci = listFreqs.size();
+  NumericVector LocusLRs(nLoci);
+  
+  for(i = 0; i < *nLoci; i++){
+    NumericVector Freqs = as<NumericVector>(listFreqs[i]);
+    LocusLRs[i] = locusLRmixC(ProfVic[2 * i], ProfSus[2 * i], Freqs);
+  }
+  
+  return LocusLRs;
+}
 
-double locusLRmix(IntegerVector::const_iterator ProfVic, IntegerVector::const_iterator ProfSus, 
+IntegerVector locusIbsC(IntegerVector ProfMat, int N){
+  
+  // assumes pnProfMat is a vector of length 4 * N
+  IntegerVector result(N);
+  
+  int i;
+  for(i = 0; i < N; i++){
+    int i1 = 4 * i;
+    result[i] = profIbsC(ProfMat[i1]);
+  }
+  
+  return result;
+}
+
+int IBSC(IntegerVector Prof1, IntegerVector pnProf2, int nLoci){
+  int s = 0;
+  int i;
+  IntegerVector p(4);
+  
+  for(i = 0; i < nLoci; i++){
+    int i1 = 2 * i;
+    p[0] = Prof1[i1];
+    p[1] = Prof1[i1 + 1];
+    p[2] = Prof2[i1];
+    p[3] = Prof2[i1 + 1];  
+    s += profIbsC(p);
+  }
+  return s;
+}
+  
+double locusLRmixC(IntegerVector::const_iterator ProfVic, IntegerVector::const_iterator ProfSus, 
                   NumericVector Freq){ 
   double dLR;
   double dPa, dPb, dPc, dPd;
   
   dPa = dPb = dPc =  dPd = 0;
   
-  if(pnProfVic[0] == pnProfVic[1]){ // hom vic aa
-    if(pnProfSus[0] == pnProfSus[1]){ // hom sus aa or bb
-      if(pnProfSus[0] == pnProfVic[0]){ // sus aa
+  if(ProfVic[0] == ProfVic[1]){ // hom vic aa
+    if(ProfSus[0] == ProfSus[1]){ // hom sus aa or bb
+      if(ProfSus[0] == ProfVic[0]){ // sus aa
         // *nCase = 1;
-        dPa = pdFreq[pnProfVic[0] - 1];
+        dPa = Freq[ProfVic[0] - 1];
         dLR = 1 / (dPa * dPa);
       }else{ // sus bb
         // *nCase = 2;
-        dPa = pdFreq[pnProfVic[0] - 1];
-        dPb = pdFreq[pnProfSus[0] - 1];
+        dPa = Freq[ProfVic[0] - 1];
+        dPb = Freq[ProfSus[0] - 1];
         dLR = 1 / (dPb * (2 * dPa + dPb));
       }
     }else{ // suspect ab, bc
-      if(pnProfSus[0] == pnProfVic[0] || pnProfSus[1] == pnProfVic[0]){ // sus ab
+      if(ProfSus[0] == ProfVic[0] || ProfSus[1] == ProfVic[0]){ // sus ab
         // *nCase = 4;
-        dPa =  pdFreq[pnProfVic[0] - 1];
-        dPb =  pdFreq[pnProfSus[pnProfSus[0] == pnProfVic[0] ? 1 : 0] - 1];
+        dPa =  Freq[ProfVic[0] - 1];
+        dPb =  Freq[ProfSus[ProfSus[0] == ProfVic[0] ? 1 : 0] - 1];
         dLR = 1 / (dPb * (2 * dPa + dPb));
       }else{ // suspect bc
         // *nCase = 5;
-        dPb = pdFreq[pnProfSus[0] - 1];
-        dPc = pdFreq[pnProfSus[1] - 1];
+        dPb = Freq[ProfSus[0] - 1];
+        dPc = Freq[ProfSus[1] - 1];
         dLR = 1/(2 * dPb * dPc);
       }
     }
   }else{ // vic ab
-    if(pnProfSus[0] == pnProfSus[1]){ // hom sus aa or bb or cc
-      if(pnProfSus[0] == pnProfVic[0] || pnProfSus[0] == pnProfVic[1]){ // sus aa or bb
+    if(ProfSus[0] == ProfSus[1]){ // hom sus aa or bb or cc
+      if(ProfSus[0] == ProfVic[0] || ProfSus[0] == ProfVic[1]){ // sus aa or bb
         // *nCase = 5;
-        dPa = pdFreq[pnProfVic[0] - 1];
-        dPb = pdFreq[pnProfVic[1] - 1];
+        dPa = Freq[ProfVic[0] - 1];
+        dPb = Freq[ProfVic[1] - 1];
         double dp = dPa + dPb;
         dLR = 1 / (dp * dp);
       }else{ // suspect cc
         // *nCase = 6;
-        dPa = pdFreq[pnProfVic[0] - 1];
-        dPb = pdFreq[pnProfVic[1] - 1];
-        dPc = pdFreq[pnProfSus[0] - 1];
+        dPa = Freq[ProfVic[0] - 1];
+        dPb = Freq[ProfVic[1] - 1];
+        dPc = Freq[ProfSus[0] - 1];
         dLR = 1 / (dPc * (2 * (dPa + dPb) + dPc));
       }
     }else{ // sus ab, ac or bc or cd
-      if(pnProfSus[0] == pnProfVic[0] && pnProfSus[1] == pnProfVic[1]){ // sus ab
+      if(ProfSus[0] == ProfVic[0] && ProfSus[1] == ProfVic[1]){ // sus ab
         // *nCase = 7;
-        dPa = pdFreq[pnProfSus[0] - 1];
-        dPb = pdFreq[pnProfSus[1] - 1];
+        dPa = Freq[ProfSus[0] - 1];
+        dPb = Freq[ProfSus[1] - 1];
         double dp = dPa + dPb;
         dLR = 1 / (dp * dp);
-      }else if(pnProfSus[0] == pnProfVic[0] || pnProfSus[1] == pnProfVic[0]){ // sus ac 
+      }else if(ProfSus[0] == ProfVic[0] || ProfSus[1] == ProfVic[0]){ // sus ac 
         // *nCase = 8;
-        dPa = pdFreq[pnProfVic[0] - 1];
-        dPb = pdFreq[pnProfVic[1] - 1];
+        dPa = Freq[ProfVic[0] - 1];
+        dPb = Freq[ProfVic[1] - 1];
       
-        if(pnProfSus[0] == pnProfVic[0]){
-          dPc = pdFreq[pnProfSus[1] - 1];
+        if(ProfSus[0] == ProfVic[0]){
+          dPc = Freq[ProfSus[1] - 1];
         }else{
-          dPc = pdFreq[pnProfSus[0] - 1];
+          dPc = Freq[ProfSus[0] - 1];
         }
         dLR = 1 / (dPc * (2 * (dPa + dPb) + dPc));
-      }else if(pnProfSus[0] == pnProfVic[1] || pnProfSus[1] == pnProfVic[1]){ // sus bc
+      }else if(ProfSus[0] == ProfVic[1] || ProfSus[1] == ProfVic[1]){ // sus bc
         // *nCase = 9;
-        dPa = pdFreq[pnProfVic[0] - 1];
-        if(pnProfSus[0] == pnProfVic[1]){
-          dPb = pdFreq[pnProfSus[0] - 1];
-          dPc = pdFreq[pnProfSus[1] - 1];
+        dPa = Freq[ProfVic[0] - 1];
+        if(ProfSus[0] == ProfVic[1]){
+          dPb = Freq[ProfSus[0] - 1];
+          dPc = Freq[ProfSus[1] - 1];
         }else{
-          dPb = pdFreq[pnProfSus[1] - 1];
-          dPc = pdFreq[pnProfSus[0] - 1];
+          dPb = Freq[ProfSus[1] - 1];
+          dPc = Freq[ProfSus[0] - 1];
         }
         dLR = 1 / (dPc * (2 * (dPa + dPb) + dPc));
-    }else{ // sus cd
-      // *nCase = 10;
-      dPc = pdFreq[pnProfSus[0] - 1];
-      dPd = pdFreq[pnProfSus[1] - 1];
-      dLR = 1 / (2 * dPc * dPd);
+      }else{ // sus cd
+        // *nCase = 10;
+        dPc = Freq[ProfSus[0] - 1];
+        dPd = Freq[ProfSus[1] - 1];
+        dLR = 1 / (2 * dPc * dPd);
+      }
     }
   }
-}
   //pdF[0] = dPa;
   //pdF[1] = dPb;
   //pdF[2] = dPc;
   //pdF[3] = dPd;
-  *pdResult = dLR;
+  return dLR;
 }
   
 
@@ -353,4 +407,57 @@ List maximizeLRPCC(List listFreqs, int nBlockSize){
   }*/
   
   return listResult;
+}
+
+List blockStats(int *pnProf1, int *pnProf2, int *nLoci, int *nProf,
+double *pdFreq, int *pnAlleles, int *nCode,
+int *pnIBS, double *pdLRSib, double *pdLRPC){
+  
+  int i;
+  
+  if(*nCode == 1){ // lrSib only
+  for(i = 0; i < (*nProf); i++){
+    int nOffset = 2*(*nLoci)*i;
+    int *pProf1 = &pnProf1[nOffset];
+    int *pProf2 = &pnProf2[nOffset];
+    
+    lrSib(pProf1, pProf2, nLoci, pdFreq, pnAlleles, &pdLRSib[i]);
+  }
+  }else if(*nCode == 2){ //lrPC only
+  for(i = 0; i < (*nProf); i++){
+    int nOffset = 2*(*nLoci)*i;
+    int *pProf1 = &pnProf1[nOffset];
+    int *pProf2 = &pnProf2[nOffset];
+    
+    lrPC(pProf1, pProf2, nLoci, pdFreq, pnAlleles, &pdLRPC[i]);
+  }
+  }else if(*nCode == 3){ // ibs only
+  for(i = 0; i < (*nProf); i++){
+    int nOffset = 2*(*nLoci)*i;
+    int *pProf1 = &pnProf1[nOffset];
+    int *pProf2 = &pnProf2[nOffset];
+    
+    IBSC(pProf1, pProf2, nLoci, &pnIBS[i]);
+  }
+  }else if(*nCode == 4){ // lrSib and lrPC
+  for(i = 0; i < (*nProf); i++){
+    int nOffset = 2*(*nLoci)*i;
+    int *pProf1 = &pnProf1[nOffset];
+    int *pProf2 = &pnProf2[nOffset];
+    
+    lrSib(pProf1, pProf2, nLoci, pdFreq, pnAlleles, &pdLRSib[i]);
+    lrPC(pProf1, pProf2, nLoci, pdFreq, pnAlleles, &pdLRPC[i]);
+    
+  }
+  }else if(*nCode == 5){ // lrSib, lrPC and ibs
+  for(i = 0; i < (*nProf); i++){
+    int nOffset = 2*(*nLoci)*i;
+    int *pProf1 = &pnProf1[nOffset];
+    int *pProf2 = &pnProf2[nOffset];
+    
+    lrSib(pProf1, pProf2, nLoci, pdFreq, pnAlleles, &pdLRSib[i]);
+    lrPC(pProf1, pProf2, nLoci, pdFreq, pnAlleles, &pdLRPC[i]);
+    IBSC(pProf1, pProf2, nLoci, &pnIBS[i]);
+  }
+  }
 }

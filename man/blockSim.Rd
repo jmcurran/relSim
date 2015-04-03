@@ -8,7 +8,7 @@
 }
 \usage{
 blockSim(N, Freqs, rel = "UN", ibsthresh = NULL, kithresh = NULL,
-        code = 1, falseNeg = TRUE, BlockSize = N/10)
+        code = 1, falseNeg = TRUE, BlockSize = N / 10)
 }
 \arguments{
     \item{N}{The number of iterations to carry out}

@@ -31,18 +31,14 @@ calcFst = function(Pop, subPopIdx = NULL){
         ns = length(unique(subPopIdx))
     }
 
-    Fst = rep(0, nLoci + 1)
+    Fst = .calcFst(Pop = Pop$profiles,
+                   SubPopIdx = subPopIdx,
+                   N = N, 
+                   ns = ns,
+                   nLoci = nLoci,
+                   NumLocusAlleles = NumLocusAlleles)
 
-    r = .C("calcFst", profiles = as.integer(Pop$profiles),
-                      subPopIdx = as.integer(subPopIdx),
-                      N = as.integer(N), ns = as.integer(ns),
-                      nLoci = as.integer(nLoci),
-                      NumLocusAlleles = as.integer(NumLocusAlleles),
-                      Fst = as.double(Fst))
-
-
-    Fst = r$Fst
-    names(Fst)[1:nLoci] = names(Pop$loci)
+    names(Fst)[1:nLoci] = Pop$Freqs$loci
     names(Fst)[nLoci + 1] = "Overall"
     return(Fst)
 }

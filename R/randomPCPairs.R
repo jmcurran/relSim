@@ -45,33 +45,18 @@ randomPCPairs = function(Freqs, BlockSize = 1){
     ##     }
     ## }
 
-    f = unlist(Freqs$freqs)
-    n = sapply(Freqs$freqs, length)
     nLoci = length(Freqs$loci)
-
     Profile = vector(mode = "list", length = BlockSize)
-    pVecParent = rep(0, 2*nLoci*BlockSize)
-    pVecChild = rep(0, 2*nLoci*BlockSize)
 
 
-    pVecParent = .C("randomProfiles", p = as.integer(pVecParent),
-                               nLoci = as.integer(nLoci),
-                               f = as.double(f), n = as.integer(n),
-                               u = as.double(runif(2*nLoci*BlockSize)),
-                               b = as.integer(BlockSize))$p
-
-    pVecChild = .C("randomChildren", pParent = as.integer(pVecParent),
-                               pChild = as.integer(pVecChild),
-                               nLoci = as.integer(nLoci),
-                               f = as.double(f), n = as.integer(n),
-                               u = as.double(runif(3*nLoci*BlockSize)),
-                               b = as.integer(BlockSize))$pChild
-
+    Parent = randomProfiles(Freqs$freqs, BlockSize)
+    Child = randomProfiles(Parent, Freqs$freqs, BlockSize)
+    
 
 
     for(b in 1:BlockSize){
-        i1 = (b - 1)*2*nLoci + 1
-        i2 =  b*2*nLoci
+        i1 = (b - 1) * 2 * nLoci + 1
+        i2 =  b * 2 * nLoci
 
         Profile[[b]] = vector(mode = "list", length = 2)
         names(Profile[[b]]) = c("parent", "child")
@@ -83,7 +68,7 @@ randomPCPairs = function(Freqs, BlockSize = 1){
         class(Profile[[b]]$child) = "profile"
     }
 
-    if(BlockSize==1){
+    if(BlockSize == 1){
         return(Profile[[1]])
     }else{
         return(Profile)

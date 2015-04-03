@@ -16,35 +16,19 @@ randomProfilePairs = function(Freqs, BlockSize = 1){
     ## class(profile) = "profile"
     ## return(profile)
 
-    f = unlist(Freqs$freqs)
-    n = sapply(Freqs$freqs, length)
+    
+
+    prof1 = randomProfiles(Freqs$freqs, BlockSize)
+    prof2 = randomProfiles(Freqs$freqs, BlockSize)
     nLoci = length(Freqs$loci)
-
-
     Profile = vector(mode = "list", length = BlockSize)
-    pVec1 = rep(0, 2*nLoci*BlockSize)
-    pVec2 = rep(0, 2*nLoci*BlockSize)
-
-    u1 = runif(2*nLoci*BlockSize)
-    pVec1 = .C("randomProfiles", p = as.integer(pVec1),
-                               nLoci = as.integer(nLoci),
-                               f = as.double(f), n = as.integer(n),
-                               u = as.double(u1),
-                               b = as.integer(BlockSize))$p
-
-    u1 = runif(2*nLoci*BlockSize)
-    pVec2 = .C("randomProfiles", p = as.integer(pVec2),
-                               nLoci = as.integer(nLoci),
-                               f = as.double(f), n = as.integer(n),
-                               u = as.double(u1),
-                               b = as.integer(BlockSize))$p
-
+    
     for(b in 1:BlockSize){
-        i1 = (b - 1)*2*nLoci + 1
-        i2 =  b*2*nLoci
+        i1 = (b - 1) * 2 * nLoci + 1
+        i2 =  b * 2 * nLoci
 
-        Profile[[b]]$prof1 = pVec1[i1:i2]
-        Profile[[b]]$prof2 = pVec2[i1:i2]
+        Profile[[b]]$prof1 = prof1[i1:i2]
+        Profile[[b]]$prof2 = prof2[i1:i2]
         class(Profile[[b]]$prof1) = "profile"
         class(Profile[[b]]$prof2) = "profile"
     }

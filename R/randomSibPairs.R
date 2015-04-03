@@ -22,40 +22,23 @@ randomSibPairs = function(Freqs, BlockSize = 1){
     ##     }
     ## }
 
-    f = unlist(Freqs$freqs)
-    n = sapply(Freqs$freqs, length)
     nLoci = length(Freqs$loci)
-
     Profile = vector(mode = "list", length = BlockSize)
-    pVecSib1 = rep(0, 2*nLoci*BlockSize)
-    pVecSib2 = rep(0, 2*nLoci*BlockSize)
-
-    pVecSib1 = .C("randomProfiles", p = as.integer(pVecSib1),
-                               nLoci = as.integer(nLoci),
-                               f = as.double(f), n = as.integer(n),
-                               u = as.double(runif(2*nLoci*BlockSize)),
-                               b = as.integer(BlockSize))$p
-
-    pVecSib2 = .C("randomSibs", pSib1 = as.integer(pVecSib1),
-                               pSib2 = as.integer(pVecSib2),
-                               nLoci = as.integer(nLoci),
-                               f = as.double(f), n = as.integer(n),
-                               u = as.double(runif(3*nLoci*BlockSize)),
-                               b = as.integer(BlockSize))$pSib2
-
-
+    
+    Sib1 = randomProfiles(Freqs$freqs, BlockSize);
+    Sib2 = randomSibs(Sib1, Freqs$freqs, BlockSize);
 
     for(b in 1:BlockSize){
         i1 = (b - 1)*2*nLoci + 1
-        i2 =  b*2*nLoci
+        i2 =  b * 2*nLoci
 
         Profile[[b]] = vector(mode = "list", length = 2)
         names(Profile[[b]]) = c("sib1", "sib2")
 
-        Profile[[b]]$sib1 = pVecSib1[i1:i2]
+        Profile[[b]]$sib1 = Sib1[i1:i2]
         class(Profile[[b]]$sib1) = "profile"
 
-        Profile[[b]]$sib2 = pVecSib2[i1:i2]
+        Profile[[b]]$sib2 = Sib2[i1:i2]
         class(Profile[[b]]$sib2) = "profile"
     }
 

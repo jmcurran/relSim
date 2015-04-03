@@ -22,14 +22,11 @@ locusIBS = function(profMat){
     N = nrow(profMat)
     nc = ncol(profMat)
 
-    if(nc!=4)
+    if(nc != 4)
         stop("Wrong dimensions")
 
-    result = rep(0, N)
-    ## for(i in 1:N)
-    ##     result[i] = profIbs(profMat[i,1:2],profMat[i,3:4])
-
     p = as.vector(t(profMat))
+    locusIBS_Caller
     r = rep(0, N)
     return(.C("locusIbs", profVec = as.integer(p), r = as.integer(r),
               N = as.integer(N))$r)

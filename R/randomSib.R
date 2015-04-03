@@ -6,7 +6,7 @@ randomSib = function(profile, Freqs){
         f = Freqs$freqs[[nLoc]]
         i = sample(1:4, 1)
         a = sample(1:length(f), 2, replace = TRUE, prob = f)
-        i1 = 2*nLoc - 1
+        i1 = 2 * nLoc - 1
         i2 = i1 + 1
 
         switch(i,
@@ -25,5 +25,4 @@ randomSib = function(profile, Freqs){
     }
     class(profSib) = "profile"
     return(profSib)
-
 }

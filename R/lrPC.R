@@ -5,13 +5,13 @@ lrPC = function(parent, child, Freqs = NULL,
     stop("Must specify either Freqs or both f and n")
   }
   
-  if(!is.null(Freqs)){
+  if(is.null(Freqs)){
     loc = rep(1:length(n), n)
     Freqs = split(f, n)
   }
   
   
-  lr = lrPC_Caller(parent, child, Freqs)
+  lr = .lrPC(parent, child, Freqs$freqs)
 
   return(lr)
 }

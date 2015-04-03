@@ -38,7 +38,7 @@ blockSim = function(N, Freqs, rel = "UN", ibsthresh = NULL, kithresh = NULL,
       Prof1 = randomProfiles(Freqs$freqs, BlockSize)
       Prof2 = randomProfiles(Freqs$freqs, BlockSize)
       
-      count = blockStatCounts(Prof1, Prof2, nProf, Freq$freqs, 
+      count = blockStatCounts(Prof1, Prof2, BlockSize, Freqs$freqs, 
                               code, falseNeg, ibsthresh, kithresh, nResults)
       nTotal = nTotal + count
       setTxtProgressBar(pb, block)
@@ -48,7 +48,7 @@ blockSim = function(N, Freqs, rel = "UN", ibsthresh = NULL, kithresh = NULL,
       Prof1 = randomProfiles(Freqs$freqs, BlockSize)
       Prof2 = randomSibs(Prof1, Freqs$freqs, BlockSize)
       
-      count = blockStatCounts(Prof1, Prof2, nProf, Freq$freqs, 
+      count = blockStatCounts(Prof1, Prof2, BlockSize, Freqs$freqs, 
                               code, falseNeg, ibsthresh, kithresh, nResults)
       
       nTotal = nTotal + count
@@ -59,7 +59,7 @@ blockSim = function(N, Freqs, rel = "UN", ibsthresh = NULL, kithresh = NULL,
       Prof1 = randomProfiles(Freqs$freqs, BlockSize)
       Prof2 = randomChildren(Prof1, Freqs$freqs, BlockSize)
       
-      count = blockStatCounts(Prof1, Prof2, nProf, Freq$freqs, 
+      count = blockStatCounts(Prof1, Prof2, BlockSize, Freqs$freqs, 
                               code, falseNeg, ibsthresh, kithresh, nResults)
       
       nTotal = nTotal + count

@@ -26,8 +26,5 @@ locusIBS = function(profMat){
         stop("Wrong dimensions")
 
     p = as.vector(t(profMat))
-    locusIBS_Caller
-    r = rep(0, N)
-    return(.C("locusIbs", profVec = as.integer(p), r = as.integer(r),
-              N = as.integer(N))$r)
+    return(.locusIBS(p, N))
 }

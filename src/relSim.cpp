@@ -110,13 +110,13 @@ double locusLRmix(IntegerVector::const_iterator ProfVic, IntegerVector::const_it
   return dLR;
 }
 
-// [[Rcpp::export]]
+// [[Rcpp::export(".locusLRmix")]]
 double locusLRmix_Caller(IntegerVector ProfVic, IntegerVector ProfSus, 
                    NumericVector Freq){ 
   return locusLRmix(ProfVic.begin(), ProfSus.begin(), Freq);
 }
 
-// [[Rcpp::export("LRmix_Caller")]]
+// [[Rcpp::export(".LRmix")]]
 NumericVector LRmix(IntegerVector ProfVic, IntegerVector ProfSus, List listFreqs){
   int i;
   int nLoci = listFreqs.size();
@@ -130,7 +130,7 @@ NumericVector LRmix(IntegerVector ProfVic, IntegerVector ProfSus, List listFreqs
   return LocusLRs;
 }
 
-//[[Rcpp::export("locusIBS_Caller")]]
+//[[Rcpp::export(".locusIBS")]]
 IntegerVector locusIBS(IntegerVector ProfMat, int N){
   
   // assumes pnProfMat is a vector of length 4 * N
@@ -161,7 +161,7 @@ int IBS(IntegerVector::const_iterator Prof1, IntegerVector::const_iterator Prof2
   return s;
 }
 
-// [[Rcpp::export]]
+// [[Rcpp::export(".IBS")]]
 int IBS_Caller(IntegerVector Prof1, IntegerVector Prof2, int nLoci){
   return IBS(Prof1.begin(), Prof2.begin(), nLoci);
 }
@@ -381,7 +381,7 @@ double lrPC(IntegerVector::const_iterator ProfParent, IntegerVector::const_itera
 	return(dLR);
 }
 
-// [[Rcpp::export]]
+// [[Rcpp::export(".lrPC")]]
 double lrPC_Caller(IntegerVector ProfParent, IntegerVector ProfChild, 
             List listFreqs){
   return lrPC(ProfParent.begin(), ProfChild.begin(), listFreqs);
@@ -496,7 +496,13 @@ double lrSib(IntegerVector::const_iterator ProfSib1, IntegerVector::const_iterat
   return dLR;
 }
 
-double locusProbC(IntegerVector::const_iterator Prof, NumericVector Freq){
+// [[Rcpp::export(".lrSib")]]
+double lrSib_Caller(IntegerVector ProfSib1, IntegerVector ProfSib2, 
+              List listFreqs){
+  return lrSib(ProfSib1.begin(), ProfSib2.begin(), listFreqs);                
+}
+
+double locusProb(IntegerVector::const_iterator Prof, NumericVector Freq){
   double dResult = 0;
 
   if(Prof[0] == Prof[1]){
@@ -511,7 +517,7 @@ double locusProbC(IntegerVector::const_iterator Prof, NumericVector Freq){
   return dResult;
 }
   
-double probC(IntegerVector Prof, List listFreqs){
+double prob(IntegerVector Prof, List listFreqs){
   int nLoci = listFreqs.size();
   int nLoc;
   double dProd = 1;
@@ -521,7 +527,7 @@ double probC(IntegerVector Prof, List listFreqs){
     int i1 = 2*nLoc;
     NumericVector Freq = as<NumericVector>(listFreqs[nLoc]);
     
-    dProd *= locusProbC(Prof.begin() + i1, Freq);
+    dProd *= locusProb(Prof.begin() + i1, Freq);
     nLoc++;
   }
   

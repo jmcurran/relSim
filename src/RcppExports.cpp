@@ -149,6 +149,19 @@ BEGIN_RCPP
     return __result;
 END_RCPP
 }
+// lrSib_Caller
+double lrSib_Caller(IntegerVector ProfSib1, IntegerVector ProfSib2, List listFreqs);
+RcppExport SEXP relSim_lrSib_Caller(SEXP ProfSib1SEXP, SEXP ProfSib2SEXP, SEXP listFreqsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< IntegerVector >::type ProfSib1(ProfSib1SEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type ProfSib2(ProfSib2SEXP);
+    Rcpp::traits::input_parameter< List >::type listFreqs(listFreqsSEXP);
+    __result = Rcpp::wrap(lrSib_Caller(ProfSib1, ProfSib2, listFreqs));
+    return __result;
+END_RCPP
+}
 // blockStatCounts
 IntegerVector blockStatCounts(IntegerVector Prof1, IntegerVector Prof2, int nProf, List listFreqs, int nCode, bool bFalseNeg, IntegerVector IBSthresh, NumericVector LRthresh, int nNumResults);
 RcppExport SEXP relSim_blockStatCounts(SEXP Prof1SEXP, SEXP Prof2SEXP, SEXP nProfSEXP, SEXP listFreqsSEXP, SEXP nCodeSEXP, SEXP bFalseNegSEXP, SEXP IBSthreshSEXP, SEXP LRthreshSEXP, SEXP nNumResultsSEXP) {

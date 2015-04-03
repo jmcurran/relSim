@@ -1,9 +1,10 @@
 lrMix = function(profiles, Freqs){
     N  = length(profiles)
+    nLoci = length(Freqs$loci)
     results = matrix(0, nrow = N, ncol = nLoci)
 
     for(i in 1:N){
-      results[i,] = LRmix_Caller(profiles[[i]][[1]],
+      results[i,] = .LRmix(profiles[[i]][[1]],
                         profiles[[i]][[2]],
                         Freqs$freqs)
     }

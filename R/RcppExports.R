@@ -9,19 +9,19 @@
     .Call('relSim_calcFst', PACKAGE = 'relSim', Pop, SubPopIdx, N, ns, nLoci, NumLocusAlleles)
 }
 
-locusLRmix_Caller <- function(ProfVic, ProfSus, Freq) {
+.locusLRmix <- function(ProfVic, ProfSus, Freq) {
     .Call('relSim_locusLRmix_Caller', PACKAGE = 'relSim', ProfVic, ProfSus, Freq)
 }
 
-LRmix_Caller <- function(ProfVic, ProfSus, listFreqs) {
+.LRmix <- function(ProfVic, ProfSus, listFreqs) {
     .Call('relSim_LRmix', PACKAGE = 'relSim', ProfVic, ProfSus, listFreqs)
 }
 
-locusIBS_Caller <- function(ProfMat, N) {
+.locusIBS <- function(ProfMat, N) {
     .Call('relSim_locusIBS', PACKAGE = 'relSim', ProfMat, N)
 }
 
-IBS_Caller <- function(Prof1, Prof2, nLoci) {
+.IBS <- function(Prof1, Prof2, nLoci) {
     .Call('relSim_IBS_Caller', PACKAGE = 'relSim', Prof1, Prof2, nLoci)
 }
 
@@ -37,12 +37,16 @@ randomChildren <- function(ProfParent, listFreqs, nBlockSize) {
     .Call('relSim_randomChildren', PACKAGE = 'relSim', ProfParent, listFreqs, nBlockSize)
 }
 
-lrPC_Caller <- function(ProfParent, ProfChild, listFreqs) {
+.lrPC <- function(ProfParent, ProfChild, listFreqs) {
     .Call('relSim_lrPC_Caller', PACKAGE = 'relSim', ProfParent, ProfChild, listFreqs)
 }
 
 maximizeLRPC <- function(listFreqs, nBlockSize) {
     .Call('relSim_maximizeLRPC', PACKAGE = 'relSim', listFreqs, nBlockSize)
+}
+
+.lrSib <- function(ProfSib1, ProfSib2, listFreqs) {
+    .Call('relSim_lrSib_Caller', PACKAGE = 'relSim', ProfSib1, ProfSib2, listFreqs)
 }
 
 blockStatCounts <- function(Prof1, Prof2, nProf, listFreqs, nCode, bFalseNeg, IBSthresh, LRthresh, nNumResults) {

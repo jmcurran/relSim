@@ -5,13 +5,13 @@ lrSib = function(sib1, sib2, Freqs  = NULL, nLoci = length(sib1)/2,
     stop("Must specify either Freqs or both f and n")
   }
   
-  if(!is.null(Freqs)){
+  if(is.null(Freqs)){
     loc = rep(1:length(n), n)
     Freqs = split(f, n)
   }
   
   
-  lr = lrSib_Caller(sib1, sib2, Freqs)
+  lr = .lrSib(sib1, sib2, Freqs$freqs)
   
   return (lr)
 }

@@ -523,7 +523,6 @@ double prob(IntegerVector Prof, List listFreqs){
   double dProd = 1;
   
   for(nLoc = 0; nLoc < nLoci; nLoc++){
-    double lprob;
     int i1 = 2*nLoc;
     NumericVector Freq = as<NumericVector>(listFreqs[nLoc]);
     

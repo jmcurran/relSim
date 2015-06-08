@@ -1,4 +1,5 @@
 #include <Rcpp.h>
+#include <map>
 using namespace Rcpp;
 
 int profIBS(IntegerVector::const_iterator Prof){
@@ -166,7 +167,7 @@ int IBS_Caller(IntegerVector Prof1, IntegerVector Prof2, int nLoci){
   return IBS(Prof1.begin(), Prof2.begin(), nLoci);
 }
 
-// [[Rcpp::export]]
+// [[Rcpp::export(".randomProfiles")]]
 IntegerVector randomProfiles(List listFreqs, int nBlockSize = 1000){
   int nLoci = listFreqs.size();
   int nLoc;
@@ -718,3 +719,57 @@ List blockStats(IntegerVector Prof1, IntegerVector Prof2, int nProf,
   }
   return results;
 }
+
+IntegerVector score(IntegerVector& Profiles, int nContributors, int nLoci){
+  
+  IntegerVector vResults;
+  int nLoc, nContrib;
+  
+  for(nLoc = 0; nLoc < nLoci; nLoc++){
+    std::map<int, int> mapCounts;
+    
+    for(nContrib = 0; nContrib < nContributors; nContrib++){
+      int nOffset = 2 * nLoci * nContrib;
+      int nA1 = Profiles[nOffset + 2 * nLoc];
+      int nA2 = Profiles[nOffset + 2 * nLoc + 1];
+      
+      // doesn't matter what we count because it's presence we're interested in 
+      mapCounts[nA1] = 1;
+      mapCounts[nA2] = 1;
+    }
+    
+    vResults.push_back(mapCounts.size());
+  }
+  
+  return vResults;
+}
+
+// [[Rcpp::export(".simNpersonMixture")]]  
+NumericMatrix simNpersonMixture(List listFreqs, int numContributors, int numIterations){
+  
+  int i, nLoc;
+  int nLoci = listFreqs.size();
+  NumericMatrix results(nLoci, 2 * numContributors);
+  
+  for(i = 0; i < numIterations; i++){
+    
+    // CreateProfiles(Profiles, nContributors, popfreqs, nLoci);
+    IntegerVector Profiles = randomProfiles(listFreqs, numContributors);
+    IntegerVector vResults = score(Profiles, numContributors, nLoci);
+    
+    for(nLoc = 0; nLoc < nLoci; nLoc++){
+      int nAlleles = vResults[nLoc] - 1;
+      results(nLoc, nAlleles)++;
+    }  
+  }
+
+  for(nLoc = 0; nLoc < nLoci; nLoc++){
+    for(i = 0; i < 2 * numContributors; i++){
+      results(nLoc, i) /=  numIterations;
+    }
+  }
+  
+  return results;
+}
+
+

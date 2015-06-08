@@ -1,3 +1,30 @@
+#' Saves/writes population profiles to disk
+#' 
+#' Writes a population of profiles to disk using the original allele
+#' designations rather than the internal integer representations that are used
+#' for the other functions.
+#' 
+#' 
+#' @param fileName the name and path where the population profiles are to be
+#' saved to.
+#' @param pop an object of class \code{population}, most likely produced by
+#' \code{breedFst}
+#' @param addAmelo The simulated populations do not have Amelogenin. If
+#' \code{TRUE} then an Amelogenin marker is added to the population, and all
+#' the profiles are set to male XY, although this is coded to 1,2 to keep the
+#' allele designations numeric.
+#' @param delim The allele delimiter.
+#' @note Rare alleles are recoded to 108.1.
+#' @author James M. Curran
+#' @seealso breedFst
+#' @examples
+#' 
+#' data(USCaucs)
+#' pop = breedFst(USCaucs)
+#' \dontrun{
+#'   writePop("USCaucs.csv", pop)
+#'   }
+#' 
 writePop = function(fileName,  pop, addAmelo = FALSE, delim = ','){
   nLoci = pop$nLoci
   Alleles = lapply(pop$Freqs$freqs, names)

@@ -1,3 +1,28 @@
+#' Generate one or more pairs of random siblings from a given set of allele
+#' frequencies
+#' 
+#' Generates one or more pairs of random siblings from a given set of allele
+#' frequencies.
+#' 
+#' The alleles are simply integers rather than the STR repeat numbers. This
+#' speeds up computation immensely when calculating any of the LRs or IBS.
+#' 
+#' @param Freqs A list containing two lists labelled loci and freqs. The second
+#' list is a list of vectors containing the allele frequencies of each allele
+#' at each locus in the multiplex.
+#' @param BlockSize The number of pairs of profiles to generate
+#' @return A list of length \code{BlockSize}. Each element of the list has a
+#' sublist containing two profiles called \code{sib1} and \code{sib2}
+#' @author James M. Curran
+#' @seealso randomPCPairs, randomProfilePairs
+#' @examples
+#' 
+#' data(fbiCaucs)
+#' P = randomSibPairs(fbiCaucs)
+#' P$sib1
+#' P$sib2
+#' 
+#' @export randomSibPairs
 randomSibPairs = function(Freqs, BlockSize = 1){
     ## nLoci = length(Freqs$loci)
     ## profSib = matrix(0, nc = 2, nr = nLoci)

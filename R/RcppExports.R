@@ -25,7 +25,7 @@
     .Call('relSim_IBS_Caller', PACKAGE = 'relSim', Prof1, Prof2, nLoci)
 }
 
-randomProfiles <- function(listFreqs, nBlockSize = 1000L) {
+.randomProfiles <- function(listFreqs, nBlockSize = 1000L) {
     .Call('relSim_randomProfiles', PACKAGE = 'relSim', listFreqs, nBlockSize)
 }
 
@@ -55,5 +55,9 @@ blockStatCounts <- function(Prof1, Prof2, nProf, listFreqs, nCode, bFalseNeg, IB
 
 blockStats <- function(Prof1, Prof2, nProf, listFreqs, nCode) {
     .Call('relSim_blockStats', PACKAGE = 'relSim', Prof1, Prof2, nProf, listFreqs, nCode)
+}
+
+.simNpersonMixture <- function(listFreqs, numContributors, numIterations) {
+    .Call('relSim_simNpersonMixture', PACKAGE = 'relSim', listFreqs, numContributors, numIterations)
 }
 

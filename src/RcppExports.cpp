@@ -196,3 +196,16 @@ BEGIN_RCPP
     return __result;
 END_RCPP
 }
+// simNpersonMixture
+NumericMatrix simNpersonMixture(List listFreqs, int numContributors, int numIterations);
+RcppExport SEXP relSim_simNpersonMixture(SEXP listFreqsSEXP, SEXP numContributorsSEXP, SEXP numIterationsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< List >::type listFreqs(listFreqsSEXP);
+    Rcpp::traits::input_parameter< int >::type numContributors(numContributorsSEXP);
+    Rcpp::traits::input_parameter< int >::type numIterations(numIterationsSEXP);
+    __result = Rcpp::wrap(simNpersonMixture(listFreqs, numContributors, numIterations));
+    return __result;
+END_RCPP
+}

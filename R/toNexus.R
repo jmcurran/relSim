@@ -1,3 +1,27 @@
+#' Export a population with substructure to a Nexus file
+#' 
+#' Exports a population with population substructure to a Nexus formatted file
+#' so that GDA can be used to check the Fst calculations
+#' 
+#' 
+#' @param Pop An object of type 'population' - see \code{breedFst} for a
+#' description of the object
+#' @param fileName The name of the file output file
+#' @author James M. Curran
+#' @seealso breedFst
+#' @references Maddison DR, Swofford DL, Maddison WP (1997), NEXUS: An
+#' extensible file format for systematic information, Systematic Biology 46
+#' (4): 590--621.
+#' 
+#' Zaykin, D. and Lewis, P., GDA - software to accompany Genetic Data Analysis
+#' II, \url{http://hydrodictyon.eeb.uconn.edu/people/plewis/software.php}.
+#' @examples
+#' 
+#' data(USCaucs)
+#' p = breedFst(USCaucs)
+#' toNexus(p)
+#' 
+#' @export toNexus
 toNexus = function(Pop, fileName = 'output.nex'){
     if(class(Pop) != "population")
         stop("Pop must be an object of class 'population'")

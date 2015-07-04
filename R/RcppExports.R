@@ -9,6 +9,18 @@
     .Call('relSim_calcFst', PACKAGE = 'relSim', Pop, SubPopIdx, N, ns, nLoci, NumLocusAlleles)
 }
 
+.importance <- function(g, g0, numContributors, nIterations) {
+    .Call('relSim_importance', PACKAGE = 'relSim', g, g0, numContributors, nIterations)
+}
+
+.sampleWeights <- function(g, g0, numContributors, nIterations) {
+    .Call('relSim_sampleWeights', PACKAGE = 'relSim', g, g0, numContributors, nIterations)
+}
+
+.tabulateN <- function(g, numContributors, nIterations) {
+    .Call('relSim_tabulateN', PACKAGE = 'relSim', g, numContributors, nIterations)
+}
+
 .locusLRmix <- function(ProfVic, ProfSus, Freq) {
     .Call('relSim_locusLRmix_Caller', PACKAGE = 'relSim', ProfVic, ProfSus, Freq)
 }

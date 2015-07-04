@@ -35,6 +35,47 @@ BEGIN_RCPP
     return __result;
 END_RCPP
 }
+// importance
+double importance(NumericVector g, NumericVector g0, int numContributors, int nIterations);
+RcppExport SEXP relSim_importance(SEXP gSEXP, SEXP g0SEXP, SEXP numContributorsSEXP, SEXP nIterationsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< NumericVector >::type g(gSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type g0(g0SEXP);
+    Rcpp::traits::input_parameter< int >::type numContributors(numContributorsSEXP);
+    Rcpp::traits::input_parameter< int >::type nIterations(nIterationsSEXP);
+    __result = Rcpp::wrap(importance(g, g0, numContributors, nIterations));
+    return __result;
+END_RCPP
+}
+// sampleWeights
+NumericVector sampleWeights(NumericVector g, NumericVector g0, int numContributors, int nIterations);
+RcppExport SEXP relSim_sampleWeights(SEXP gSEXP, SEXP g0SEXP, SEXP numContributorsSEXP, SEXP nIterationsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< NumericVector >::type g(gSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type g0(g0SEXP);
+    Rcpp::traits::input_parameter< int >::type numContributors(numContributorsSEXP);
+    Rcpp::traits::input_parameter< int >::type nIterations(nIterationsSEXP);
+    __result = Rcpp::wrap(sampleWeights(g, g0, numContributors, nIterations));
+    return __result;
+END_RCPP
+}
+// tabulateN
+IntegerVector tabulateN(NumericVector g, int numContributors, int nIterations);
+RcppExport SEXP relSim_tabulateN(SEXP gSEXP, SEXP numContributorsSEXP, SEXP nIterationsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< NumericVector >::type g(gSEXP);
+    Rcpp::traits::input_parameter< int >::type numContributors(numContributorsSEXP);
+    Rcpp::traits::input_parameter< int >::type nIterations(nIterationsSEXP);
+    __result = Rcpp::wrap(tabulateN(g, numContributors, nIterations));
+    return __result;
+END_RCPP
+}
 // locusLRmix_Caller
 double locusLRmix_Caller(IntegerVector ProfVic, IntegerVector ProfSus, NumericVector Freq);
 RcppExport SEXP relSim_locusLRmix_Caller(SEXP ProfVicSEXP, SEXP ProfSusSEXP, SEXP FreqSEXP) {

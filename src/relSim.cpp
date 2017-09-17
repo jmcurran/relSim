@@ -528,7 +528,6 @@ double prob(IntegerVector Prof, List listFreqs){
     NumericVector Freq = as<NumericVector>(listFreqs[nLoc]);
     
     dProd *= locusProb(Prof.begin() + i1, Freq);
-    nLoc++;
   }
   
   return dProd;

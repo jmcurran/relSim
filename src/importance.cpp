@@ -1,4 +1,5 @@
 #include <Rcpp.h>
+#include <math.h>
 #include <map>
 #include <string>
 #include <sstream>
@@ -7,17 +8,19 @@ using namespace Rcpp;
 using namespace std;
 
 class profileGenerator {
-  vector<double> locusProbs;
+  NumericVector locusProbs;
   vector<double> cumProbs;
   int nAlleles;
   
   public:
   class Profile {
     protected:
+    int nAlleles;
     map<int, int> mapCounts;
     
     public:
-    Profile(){};
+    Profile(const profileGenerator& pg)
+      : nAlleles(pg.nAlleles){};
     int numAlleles(){
       return mapCounts.size();
     }
@@ -31,11 +34,11 @@ class profileGenerator {
     int& operator[](int a){
       return mapCounts[a];
     };
-    
+ 
     List asList(){
-     List result;
-     map<int, int>::iterator i = mapCounts.begin();
-     ostringstream oss;
+      List result;
+      map<int, int>::iterator i = mapCounts.begin();
+      ostringstream oss;
      
       while(i != mapCounts.end()){
         oss << i->first;
@@ -47,12 +50,56 @@ class profileGenerator {
       return result;
     }
     
+    NumericVector asNumericVector(){
+      NumericVector result(nAlleles);
+      map<int, int>::iterator i = mapCounts.begin();
+      
+      while(i != mapCounts.end()){
+        result[i->first] = i->second;
+        i++;
+      }
+      
+      return result;
+    }
+    
+    long factorial(long n){
+      switch(n){
+      case 0:
+      case 1:
+        return 1;
+      case 2:
+        return 2;
+      case 3:
+        return 6;
+      case 4:
+        return 24;
+      case 5:
+        return 120;
+      case 6:
+        return 720;
+      case 7:
+        return 5040;
+      case 8:
+        return 40320;
+      case 9:
+        return 362880;
+      case 10:
+        return 3628800;
+      case 11:
+        return 39916800;
+      case 12:
+        return 479001600;
+      default:
+        return n * factorial(n - 1);
+      }
+    }
+    
     double prob(NumericVector& locusProbs, bool bLog = true){
       map<int, int>::iterator i = mapCounts.begin();
       double dSum = 0;
       
       while(i != mapCounts.end()){
-        dSum += (i->second) * locusProbs[i->first];
+        dSum += (i->second) * std::log(locusProbs[i->first]);
         i++;
       }
       
@@ -75,19 +122,20 @@ class profileGenerator {
     }
   };
   
-  Profile randProf(int numContributors){
-    Profile prof;
-    NumericVector u = runif(2 * numContributors);
+  Profile randProf(int numContributors, int numAllelesShowing){
+    Profile prof(*this);
     
-    for(int i = 0; i < 2 * numContributors; i++){
-      int a = 1;
-      while(u[i] >= cumProbs[a] && a < nAlleles){
-       // Rprintf("%d %.7f %7f\n", a, u[i], cumProbs[a]);
-        a++;
-      }
-      //Rprintf("%d %.7f %7f\n", a, u[i], cumProbs[a]);
-      //Rprintf("Generated %d\n", a - 1);
-      prof[a] += 1;
+    // choose numAllelesShowing alleles without replacement
+    IntegerVector alleles = sample((int)locusProbs.size(), numAllelesShowing, false, locusProbs, false);
+    
+    for(IntegerVector::iterator a = alleles.begin(); a != alleles.end(); a++){
+      prof[*a] = 1;
+    }
+    
+    alleles = sample(alleles, 2 * (numContributors) - numAllelesShowing, true);
+    
+    for(IntegerVector::iterator a = alleles.begin(); a != alleles.end(); a++){
+      prof[*a] += 1;
     }
     
     return(prof);
@@ -99,66 +147,16 @@ class profileGenerator {
   }
 };
 
-NumericVector log(NumericVector& x){
-  int nx = x.size();
-  NumericVector r(nx);
+// [[Rcpp::export]]  
+NumericMatrix IS(NumericVector freqs,int N, int numContributors, int numAllelesShowing){
+  profileGenerator g(freqs);
   
-  for(int i = 0; i < nx; i++){
-    r[i] = log(x[i]);
+  NumericMatrix result(N, freqs.size());
+  
+  for(int i = 0; i < N; i++){
+    result(i, _) = g.randProf(numContributors, numAllelesShowing).asNumericVector();
   }
   
-  return r;
+  return result;
 }
 
-// [[Rcpp::export(".importance")]]
-double importance(NumericVector g, NumericVector g0, int numContributors, int nIterations) {
-  profileGenerator gen(g0);
-  
-  //gen.printLocusProbs();
-  
-  double dSum = 0;
-  NumericVector log_g = log(g);
-  NumericVector log_g0 = log(g0);
-  List listProfiles;
-  
-  for(int i = 0; i < nIterations; i++){
-    profileGenerator::Profile p = gen.randProf(numContributors);
-    //listProfiles.push_back(p.asList()); 
-    if(p.numAlleles() <= 2)
-      dSum +=exp(p.prob(log_g) - p.prob(log_g0));
-  }
-
-  return dSum / nIterations;
-}
-
-// [[Rcpp::export(".sampleWeights")]]
-NumericVector sampleWeights(NumericVector g, NumericVector g0, int numContributors, int nIterations) {
-  profileGenerator gen(g0);
-  
-  NumericVector log_g = log(g);
-  NumericVector log_g0 = log(g0);
-  NumericVector w(nIterations);
-  List listProfiles;
-  
-  for(int i = 0; i < nIterations; i++){
-    profileGenerator::Profile p = gen.randProf(numContributors);
-    w[i] = exp(p.prob(log_g) - p.prob(log_g0));
-  }
-
-  return w;
-}
-
-// [[Rcpp::export(".tabulateN")]]
-IntegerVector tabulateN(NumericVector g, int numContributors, int nIterations) {
-  profileGenerator gen(g);
-  
-  IntegerVector n(2 * numContributors);
-  List listProfiles;
-  
-  for(int i = 0; i < nIterations; i++){
-    profileGenerator::Profile p = gen.randProf(numContributors);
-    n[p.numAlleles()] += 1;
-  }
-
-  return n;
-}

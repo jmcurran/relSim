@@ -9,7 +9,6 @@ ISW = function(){
   perms = allPerm(m)
   
   
-  for(x in X){
-    
-  }
+  p = ISprobs(f, X, perms)
+  return(p)
 }

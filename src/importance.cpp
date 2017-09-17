@@ -160,3 +160,12 @@ NumericMatrix IS(NumericVector freqs,int N, int numContributors, int numAllelesS
   return result;
 }
 
+// [[Rcpp::export]]
+NumericVector ISprob(const NumericVector& freqs, const NumericMatrix& AlleleCombs, const NumericMatrix& Perms){
+  int numCombs = AlleleCombs.size();
+  NumericVector results(numCombs);
+  
+  for(int i = 0l)
+  
+  for()
+}

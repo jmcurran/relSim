@@ -49,6 +49,19 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// ISprob
+NumericVector ISprob(const NumericVector& freqs, const NumericMatrix& AlleleCombs, const NumericMatrix& Perms);
+RcppExport SEXP _relSim_ISprob(SEXP freqsSEXP, SEXP AlleleCombsSEXP, SEXP PermsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const NumericVector& >::type freqs(freqsSEXP);
+    Rcpp::traits::input_parameter< const NumericMatrix& >::type AlleleCombs(AlleleCombsSEXP);
+    Rcpp::traits::input_parameter< const NumericMatrix& >::type Perms(PermsSEXP);
+    rcpp_result_gen = Rcpp::wrap(ISprob(freqs, AlleleCombs, Perms));
+    return rcpp_result_gen;
+END_RCPP
+}
 // locusLRmix_Caller
 double locusLRmix_Caller(IntegerVector ProfVic, IntegerVector ProfSus, NumericVector Freq);
 RcppExport SEXP _relSim_locusLRmix_Caller(SEXP ProfVicSEXP, SEXP ProfSusSEXP, SEXP FreqSEXP) {
@@ -228,6 +241,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_relSim_breed", (DL_FUNC) &_relSim_breed, 4},
     {"_relSim_calcFst", (DL_FUNC) &_relSim_calcFst, 6},
     {"_relSim_IS", (DL_FUNC) &_relSim_IS, 4},
+    {"_relSim_ISprob", (DL_FUNC) &_relSim_ISprob, 3},
     {"_relSim_locusLRmix_Caller", (DL_FUNC) &_relSim_locusLRmix_Caller, 3},
     {"_relSim_LRmix", (DL_FUNC) &_relSim_LRmix, 3},
     {"_relSim_locusIBS", (DL_FUNC) &_relSim_locusIBS, 2},

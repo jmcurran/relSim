@@ -13,6 +13,10 @@ IS <- function(freqs, N, numContributors, numAllelesShowing) {
     .Call('_relSim_IS', PACKAGE = 'relSim', freqs, N, numContributors, numAllelesShowing)
 }
 
+ISprob <- function(freqs, AlleleCombs, Perms) {
+    .Call('_relSim_ISprob', PACKAGE = 'relSim', freqs, AlleleCombs, Perms)
+}
+
 .locusLRmix <- function(ProfVic, ProfSus, Freq) {
     .Call('_relSim_locusLRmix_Caller', PACKAGE = 'relSim', ProfVic, ProfSus, Freq)
 }

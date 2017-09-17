@@ -162,10 +162,27 @@ NumericMatrix IS(NumericVector freqs,int N, int numContributors, int numAllelesS
 
 // [[Rcpp::export]]
 NumericVector ISprob(const NumericVector& freqs, const NumericMatrix& AlleleCombs, const NumericMatrix& Perms){
-  int numCombs = AlleleCombs.size();
+  int numCombs = AlleleCombs.nrow();
+  int numAlleles = AlleleCombs.ncol();
+  int numPerms = Perms.nrow();
   NumericVector results(numCombs);
   
-  for(int i = 0l)
+  for(int i = 0; i < numCombs; i++){
+   
+    for(int j = 0; j < numPerms; j++){
+   
+      double p = freqs[AlleleCombs(i, 0) - 1];
+      double s = p;
+      
+      for(int k = 1; k < numAlleles; k++){
+        double pk = freqs[AlleleCombs(i, k) - 1];
+        p *=  pk / (1 - s);
+        s += pk;
+      }
+   
+      results[i] += p;
+    }
+  }
   
-  for()
+  return results;
 }

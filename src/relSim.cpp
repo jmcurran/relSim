@@ -162,7 +162,7 @@ int IBS(IntegerVector::const_iterator Prof1, IntegerVector::const_iterator Prof2
   return s;
 }
 
-// [[Rcpp::export(".IBS")]]
+// [[Rcpp::export(".IBS_Caller")]]
 int IBS_Caller(IntegerVector Prof1, IntegerVector Prof2, int nLoci){
   return IBS(Prof1.begin(), Prof2.begin(), nLoci);
 }

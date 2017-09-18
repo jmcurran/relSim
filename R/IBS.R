@@ -26,7 +26,7 @@
 #' 
 #' @export IBS
 IBS = function(prof1, prof2, nLoci = length(prof1) / 2, bPrint = FALSE){
-    results =  .IBS(prof1, prof2, nLoci)
+    results =  .IBS_Caller(prof1, prof2, nLoci)
 
     if(bPrint){
         for(i in 1:nLoci){

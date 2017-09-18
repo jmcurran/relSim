@@ -14,7 +14,7 @@
 #' (4): 590--621.
 #' 
 #' Zaykin, D. and Lewis, P., GDA - software to accompany Genetic Data Analysis
-#' II, \url{http://hydrodictyon.eeb.uconn.edu/people/plewis/software.php}.
+#' II, \url{http://phylogeny.uconn.edu/software/}.
 #' @examples
 #' 
 #' data(USCaucs)

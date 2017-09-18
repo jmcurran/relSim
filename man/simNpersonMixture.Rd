@@ -7,6 +7,8 @@
 simNpersonMixture(freqs, numContributors, numIterations = 10000)
 }
 \arguments{
+\item{freqs}{a set of allele frequencies. The format can be found in \code{\link{readFreqs}}}
+
 \item{numContributors}{the number of contributors to each mixture. Must be >= 2.}
 
 \item{numIterations}{the number of N person mixtures to simulate in total.}

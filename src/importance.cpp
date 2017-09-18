@@ -61,7 +61,7 @@ class profileGenerator {
       map<int, int>::iterator i = mapCounts.begin();
       
       while(i != mapCounts.end()){
-        result[i->first] = i->second;
+        result[i->first - 1] = i->second;
         i++;
       }
       
@@ -106,7 +106,7 @@ class profileGenerator {
       double dFact = std::log(numTotalAllelesFactorial);
       
       while(i != mapCounts.end()){
-        dSum += (i->second) * std::log(locusProbs[i->first]);
+        dSum += (i->second) * std::log(locusProbs[i->first - 1]);
         dFact -= std::log(i->second);
         i++;
       }
@@ -134,14 +134,19 @@ class profileGenerator {
     Profile prof(*this, 2 * numContributors);
     
     // choose numAllelesShowing alleles without replacement
-    IntegerVector alleles = sample((int)locusProbs.size(), numAllelesShowing, false, locusProbs, false);
+    IntegerVector alleles = seq_len(locusProbs.size());
+    
+    if(numAllelesShowing != locusProbs.size()){
+      alleles = sample(alleles, numAllelesShowing, false, locusProbs);
+    }
     
     for(IntegerVector::iterator a = alleles.begin(); a != alleles.end(); a++){
       prof[*a] = 1;
+     // Rprintf("%d\n",*a);
     }
     
     alleles = sample(alleles, 2 * (numContributors) - numAllelesShowing, true);
-    
+      
     for(IntegerVector::iterator a = alleles.begin(); a != alleles.end(); a++){
       prof[*a] += 1;
     }
@@ -186,11 +191,11 @@ NumericVector ISprob(const NumericVector& freqs, const NumericMatrix& AlleleComb
    
     for(int j = 0; j < numPerms; j++){
    
-      double p = freqs[AlleleCombs(i, 0) - 1];
+      double p = freqs[AlleleCombs(i, Perms(j,0) - 1) - 1];
       double s = p;
       
       for(int k = 1; k < numAlleles; k++){
-        double pk = freqs[AlleleCombs(i, k) - 1];
+        double pk = freqs[AlleleCombs(i, Perms(j, k) - 1) - 1];
         p *=  pk / (1 - s);
         s += pk;
       }

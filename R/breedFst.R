@@ -61,7 +61,7 @@ breedFst = function(Freqs, theta = 0.01, N = 10000, ns = 10,
 
     ## generate the parental population
 
-    parents = randomProfiles(Freqs$freqs, N)
+    parents = unlist(randomProfiles(Freqs, N))
     pb = txtProgressBar(min = 0, max = nGen, style = 3)
 
     for(t in 1:nGen){

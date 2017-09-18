@@ -3,7 +3,7 @@
 #' This function simulates N persons mixtures using the supplied frequencies and records
 #' the number of times they share 1, 2, \ldots, 2N alleles locus by locus. 
 #' 
-#' @param freqs
+#' @param freqs a set of allele frequencies. The format can be found in \code{\link{readFreqs}}
 #' @param numContributors the number of contributors to each mixture. Must be >= 2.
 #' @param numIterations the number of N person mixtures to simulate in total.
 #' 

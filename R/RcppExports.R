@@ -29,7 +29,7 @@ ISprob <- function(freqs, AlleleCombs, Perms) {
     .Call('_relSim_locusIBS', PACKAGE = 'relSim', ProfMat, N)
 }
 
-.IBS <- function(Prof1, Prof2, nLoci) {
+.IBS_Caller <- function(Prof1, Prof2, nLoci) {
     .Call('_relSim_IBS_Caller', PACKAGE = 'relSim', Prof1, Prof2, nLoci)
 }
 

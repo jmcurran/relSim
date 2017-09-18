@@ -16,11 +16,17 @@ class profileGenerator {
   class Profile {
     protected:
     int nAlleles;
+    int numTotalAlleles;
+    long numTotalAllelesFactorial;
     map<int, int> mapCounts;
     
     public:
-    Profile(const profileGenerator& pg)
-      : nAlleles(pg.nAlleles){};
+    Profile(const profileGenerator& pg, int nTotalAlleles)
+      : nAlleles(pg.nAlleles){
+      numTotalAlleles = nTotalAlleles;
+      numTotalAllelesFactorial = factorial(numTotalAlleles);
+    };
+      
     int numAlleles(){
       return mapCounts.size();
     }
@@ -97,13 +103,15 @@ class profileGenerator {
     double prob(NumericVector& locusProbs, bool bLog = true){
       map<int, int>::iterator i = mapCounts.begin();
       double dSum = 0;
+      double dFact = std::log(numTotalAllelesFactorial);
       
       while(i != mapCounts.end()){
         dSum += (i->second) * std::log(locusProbs[i->first]);
+        dFact -= std::log(i->second);
         i++;
       }
       
-      return dSum;
+      return dSum + dFact;
     }
     
   };
@@ -123,7 +131,7 @@ class profileGenerator {
   };
   
   Profile randProf(int numContributors, int numAllelesShowing){
-    Profile prof(*this);
+    Profile prof(*this, 2 * numContributors);
     
     // choose numAllelesShowing alleles without replacement
     IntegerVector alleles = sample((int)locusProbs.size(), numAllelesShowing, false, locusProbs, false);
@@ -148,16 +156,23 @@ class profileGenerator {
 };
 
 // [[Rcpp::export]]  
-NumericMatrix IS(NumericVector freqs,int N, int numContributors, int numAllelesShowing){
+List IS(NumericVector freqs,int N, int numContributors, int numAllelesShowing){
   profileGenerator g(freqs);
   
-  NumericMatrix result(N, freqs.size());
+  NumericMatrix Alleles(N, freqs.size());
+  NumericVector probs(N);
   
   for(int i = 0; i < N; i++){
-    result(i, _) = g.randProf(numContributors, numAllelesShowing).asNumericVector();
+    profileGenerator::Profile p = g.randProf(numContributors, numAllelesShowing);
+    Alleles(i, _) = p.asNumericVector();
+    probs[i] = p.prob(freqs);
   }
   
-  return result;
+  List results;
+  results["Alleles"] = Alleles;
+  results["probs"] = probs;
+  
+  return results;
 }
 
 // [[Rcpp::export]]

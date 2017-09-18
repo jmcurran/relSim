@@ -36,7 +36,7 @@ BEGIN_RCPP
 END_RCPP
 }
 // IS
-NumericMatrix IS(NumericVector freqs, int N, int numContributors, int numAllelesShowing);
+List IS(NumericVector freqs, int N, int numContributors, int numAllelesShowing);
 RcppExport SEXP _relSim_IS(SEXP freqsSEXP, SEXP NSEXP, SEXP numContributorsSEXP, SEXP numAllelesShowingSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;

@@ -21,7 +21,7 @@ xtable.npmresult = function(x, caption = NULL, label = NULL, align = NULL, digit
     }else{  
       nContrib = length(x$summary) + 1
       names(x$summary) = paste(paste("$\\Pr\\left(", nContrib, "\\rightarrow ", sep = ""), 1:(nContrib - 1), "\\right$)", sep = "")
-      return(xtable.data.frame(data.frame(x$summary, check.names = FALSE), 
+      return(xtable(data.frame(x$summary, check.names = FALSE), 
                                caption = caption, label = label, align = align, digits = digits, 
                                display = display,   ...))
     }

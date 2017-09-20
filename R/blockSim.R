@@ -43,6 +43,8 @@
 #' bigger percentage of the total is used. Users must take care to make sure
 #' that the block size evenly divides \code{N} otherwise the procedure will
 #' exit. Users must also make sure that they have enough memory.
+#' @param showProgress If \code{TRUE} then a progress bar will be displayed in
+#' the console showing the progress of the simulation.
 #' @return A vector containing the number of profile pairs that satisfied the
 #' threshold conditions
 #' @author James M. Curran
@@ -65,9 +67,9 @@
 #' blockSim(N, fbiCaucs, rel = "UN", ibsthresh = ibs, kithresh = ki,
 #'          code = code, falseNeg = FALSE, BlockSize = BlockSize)
 #' }
-#' 
+#' @importFrom utils txtProgressBar
 blockSim = function(N, Freqs, rel = "UN", ibsthresh = NULL, kithresh = NULL,
-                    code = 1, falseNeg = TRUE, BlockSize = N/10){
+                    code = 1, falseNeg = TRUE, BlockSize = N/10, showProgress = FALSE){
   
   rel = toupper(rel)
   if(!grepl("(UN|FS|PC)", rel)){
@@ -99,7 +101,9 @@ blockSim = function(N, Freqs, rel = "UN", ibsthresh = NULL, kithresh = NULL,
   
   nTotal = rep(0, nResults)
   
-  pb = txtProgressBar(min = 0, max = nBlocks, style = 3)
+  if(showProgress){
+    pb = txtProgressBar(min = 0, max = nBlocks, style = 3)
+  }
   
   if(rel == "UN"){
     for(block in 1:nBlocks){
@@ -109,7 +113,9 @@ blockSim = function(N, Freqs, rel = "UN", ibsthresh = NULL, kithresh = NULL,
       count = blockStatCounts(Prof1, Prof2, BlockSize, Freqs$freqs, 
                               code, falseNeg, ibsthresh, kithresh, nResults)
       nTotal = nTotal + count
-      setTxtProgressBar(pb, block)
+      if(showProgress){
+        setTxtProgressBar(pb, block)
+      }
     }
   }else if(rel == "FS"){
     for(block in 1:nBlocks){
@@ -120,7 +126,9 @@ blockSim = function(N, Freqs, rel = "UN", ibsthresh = NULL, kithresh = NULL,
                               code, falseNeg, ibsthresh, kithresh, nResults)
       
       nTotal = nTotal + count
-      setTxtProgressBar(pb, block)
+      if(showProgress){
+        setTxtProgressBar(pb, block)
+      }
     }
   }else if(rel == "PC"){
     for(block in 1:nBlocks){
@@ -131,8 +139,14 @@ blockSim = function(N, Freqs, rel = "UN", ibsthresh = NULL, kithresh = NULL,
                               code, falseNeg, ibsthresh, kithresh, nResults)
       
       nTotal = nTotal + count
-      setTxtProgressBar(pb, block)
+      if(showProgress){
+        setTxtProgressBar(pb, block)
+      }
     }
+  }
+  
+  if(showProgress){
+    close(pb)
   }
   
   return(list(nTotal = nTotal, N = N, p = nTotal / N))

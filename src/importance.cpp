@@ -130,6 +130,8 @@ class profileGenerator {
     }
   };
   
+  // [[Rcpp::plugins("cpp11")]]
+  
   Profile randProf(int numContributors, int numAllelesShowing){
     Profile prof(*this, 2 * numContributors);
     
@@ -140,12 +142,22 @@ class profileGenerator {
       alleles = sample(alleles, numAllelesShowing, false, locusProbs);
     }
     
+    double sum = 0;
+    NumericVector newProbs;
+    
     for(IntegerVector::iterator a = alleles.begin(); a != alleles.end(); a++){
-      prof[*a] = 1;
+      int allele = *a;
+      prof[allele] = 1;
+      double f = locusProbs[allele - 1];
+      newProbs.push_back(f);
+      sum += f;
      // Rprintf("%d\n",*a);
     }
     
-    alleles = sample(alleles, 2 * (numContributors) - numAllelesShowing, true);
+    // normalize
+    newProbs = newProbs / sum;
+    
+    alleles = sample(alleles, 2 * (numContributors) - numAllelesShowing, true, newProbs);
       
     for(IntegerVector::iterator a = alleles.begin(); a != alleles.end(); a++){
       prof[*a] += 1;
@@ -181,7 +193,7 @@ List IS(NumericVector freqs,int N, int numContributors, int numAllelesShowing){
 }
 
 // [[Rcpp::export]]
-NumericVector ISprob(const NumericVector& freqs, const NumericMatrix& AlleleCombs, const NumericMatrix& Perms){
+NumericVector ISprob(const NumericVector& freqs, const NumericMatrix& AlleleCombs, const NumericMatrix& newFreqs, const NumericMatrix& Perms){
   int numCombs = AlleleCombs.nrow();
   int numAlleles = AlleleCombs.ncol();
   int numPerms = Perms.nrow();
@@ -202,6 +214,8 @@ NumericVector ISprob(const NumericVector& freqs, const NumericMatrix& AlleleComb
    
       results[i] += p;
     }
+    
+    
   }
   
   return results;

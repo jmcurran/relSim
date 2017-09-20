@@ -5,7 +5,7 @@
 \title{Perform relatives simulations using large memory blocks in C}
 \usage{
 blockSim(N, Freqs, rel = "UN", ibsthresh = NULL, kithresh = NULL,
-  code = 1, falseNeg = TRUE, BlockSize = N/10)
+  code = 1, falseNeg = TRUE, BlockSize = N/10, showProgress = FALSE)
 }
 \arguments{
 \item{N}{The number of iterations to carry out}
@@ -49,6 +49,9 @@ sample size. It is unclear whether the procedure is more efficient if a
 bigger percentage of the total is used. Users must take care to make sure
 that the block size evenly divides \code{N} otherwise the procedure will
 exit. Users must also make sure that they have enough memory.}
+
+\item{showProgress}{If \code{TRUE} then a progress bar will be displayed in
+the console showing the progress of the simulation.}
 }
 \value{
 A vector containing the number of profile pairs that satisfied the
@@ -83,7 +86,6 @@ BlockSize = 1e6
 blockSim(N, fbiCaucs, rel = "UN", ibsthresh = ibs, kithresh = ki,
          code = code, falseNeg = FALSE, BlockSize = BlockSize)
 }
-
 }
 \seealso{
 sim

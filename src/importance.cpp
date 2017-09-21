@@ -224,20 +224,20 @@ NumericVector ISprob(const List& listCombs, const NumericMatrix& Perms){
     }
     
    // Rprintf("%.7f\n", results[i]);
-    freqs = freqs / sum(freqs);
-    
-    int sumCounts = 0;
-    double p2 = 0;
-    
-    for(int j = 0; j < numAlleles; j++){
-      // Rprintf("%d %d %.7f %.7f\n", alleles[j], counts[j], freqs[j], p2);
-      p2 += (counts[j] - 1) * std::log(freqs[j]) - std::log(factorial(counts[j] - 1));
-      sumCounts += counts[j] - 1;
-    }
-    
-    p2 += std::log(factorial(sumCounts));
-    // Rprintf("%.7f\n", p2);
-    results[i] += std::log(results[i]) + p2;
+    // freqs = freqs / sum(freqs);
+    // 
+    // int sumCounts = 0;
+    // double p2 = 0;
+    // 
+    // for(int j = 0; j < numAlleles; j++){
+    //   // Rprintf("%d %d %.7f %.7f\n", alleles[j], counts[j], freqs[j], p2);
+    //   p2 += (counts[j] - 1) * std::log(freqs[j]) - std::log(factorial(counts[j] - 1));
+    //   sumCounts += counts[j] - 1;
+    // }
+    // 
+    // p2 += std::log(factorial(sumCounts));
+    // // Rprintf("%.7f\n", p2);
+    results[i] += std::log(results[i]); // + p2;
   }
   
   return results;

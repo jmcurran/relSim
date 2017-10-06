@@ -7,6 +7,38 @@
 using namespace Rcpp;
 using namespace std;
 
+long factorial(long n){
+  switch(n){
+  case 0:
+  case 1:
+    return 1;
+  case 2:
+    return 2;
+  case 3:
+    return 6;
+  case 4:
+    return 24;
+  case 5:
+    return 120;
+  case 6:
+    return 720;
+  case 7:
+    return 5040;
+  case 8:
+    return 40320;
+  case 9:
+    return 362880;
+  case 10:
+    return 3628800;
+  case 11:
+    return 39916800;
+  case 12:
+    return 479001600;
+  default:
+    return n * factorial(n - 1);
+  }
+}
+
 class profileGenerator {
   NumericVector locusProbs;
   vector<double> cumProbs;
@@ -61,53 +93,25 @@ class profileGenerator {
       map<int, int>::iterator i = mapCounts.begin();
       
       while(i != mapCounts.end()){
-        result[i->first] = i->second;
+        result[i->first - 1] = i->second;
         i++;
       }
       
       return result;
     }
     
-    long factorial(long n){
-      switch(n){
-      case 0:
-      case 1:
-        return 1;
-      case 2:
-        return 2;
-      case 3:
-        return 6;
-      case 4:
-        return 24;
-      case 5:
-        return 120;
-      case 6:
-        return 720;
-      case 7:
-        return 5040;
-      case 8:
-        return 40320;
-      case 9:
-        return 362880;
-      case 10:
-        return 3628800;
-      case 11:
-        return 39916800;
-      case 12:
-        return 479001600;
-      default:
-        return n * factorial(n - 1);
-      }
-    }
-    
     double prob(NumericVector& locusProbs, bool bLog = true){
       map<int, int>::iterator i = mapCounts.begin();
       double dSum = 0;
+      
+      if(mapCounts.size() == 1)
+        return (i->second) * std::log(locusProbs[i->first - 1]);
+      
       double dFact = std::log(numTotalAllelesFactorial);
       
       while(i != mapCounts.end()){
-        dSum += (i->second) * std::log(locusProbs[i->first]);
-        dFact -= std::log(i->second);
+        dSum += (i->second) * std::log(locusProbs[i->first - 1]);
+        dFact -= std::log(factorial(i->second));
         i++;
       }
       
@@ -130,18 +134,35 @@ class profileGenerator {
     }
   };
   
+  // [[Rcpp::plugins("cpp11")]]
+  
   Profile randProf(int numContributors, int numAllelesShowing){
     Profile prof(*this, 2 * numContributors);
     
     // choose numAllelesShowing alleles without replacement
-    IntegerVector alleles = sample((int)locusProbs.size(), numAllelesShowing, false, locusProbs, false);
+    IntegerVector alleles = seq_len(locusProbs.size());
     
-    for(IntegerVector::iterator a = alleles.begin(); a != alleles.end(); a++){
-      prof[*a] = 1;
+    if(numAllelesShowing != locusProbs.size()){
+      alleles = sample(alleles, numAllelesShowing, false, locusProbs);
     }
     
-    alleles = sample(alleles, 2 * (numContributors) - numAllelesShowing, true);
+    double sum = 0;
+    NumericVector newProbs;
     
+    for(IntegerVector::iterator a = alleles.begin(); a != alleles.end(); a++){
+      int allele = *a;
+      prof[allele] = 1;
+      double f = locusProbs[allele - 1];
+      newProbs.push_back(f);
+      sum += f;
+     // Rprintf("%d\n",*a);
+    }
+    
+    // normalize
+    newProbs = newProbs / sum;
+    
+    alleles = sample(alleles, 2 * (numContributors) - numAllelesShowing, true, newProbs);
+      
     for(IntegerVector::iterator a = alleles.begin(); a != alleles.end(); a++){
       prof[*a] += 1;
     }
@@ -176,27 +197,47 @@ List IS(NumericVector freqs,int N, int numContributors, int numAllelesShowing){
 }
 
 // [[Rcpp::export]]
-NumericVector ISprob(const NumericVector& freqs, const NumericMatrix& AlleleCombs, const NumericMatrix& Perms){
-  int numCombs = AlleleCombs.nrow();
-  int numAlleles = AlleleCombs.ncol();
+NumericVector ISprob(const List& listCombs, const NumericMatrix& Perms){
+  int numCombs = listCombs.size();
+  int numAlleles = Perms.ncol();
   int numPerms = Perms.nrow();
   NumericVector results(numCombs);
   
   for(int i = 0; i < numCombs; i++){
+    
+    List lComb = as<List>(listCombs[i]);
+    NumericVector freqs = as<NumericVector>(lComb["f"]);
+    IntegerVector alleles = as<IntegerVector>(lComb["a"]);
+    IntegerVector counts = as<IntegerVector>(lComb["c"]);
    
     for(int j = 0; j < numPerms; j++){
-   
-      double p = freqs[AlleleCombs(i, 0) - 1];
-      double s = p;
+      double p , s;
+      p = s = freqs[Perms(j, 0) - 1];
       
       for(int k = 1; k < numAlleles; k++){
-        double pk = freqs[AlleleCombs(i, k) - 1];
+        double pk = freqs[Perms(j, k) - 1];
         p *=  pk / (1 - s);
         s += pk;
       }
-   
+     // Rprintf("p = %.7f\n", p);
       results[i] += p;
     }
+    
+   // Rprintf("%.7f\n", results[i]);
+    // freqs = freqs / sum(freqs);
+    // 
+    // int sumCounts = 0;
+    // double p2 = 0;
+    // 
+    // for(int j = 0; j < numAlleles; j++){
+    //   // Rprintf("%d %d %.7f %.7f\n", alleles[j], counts[j], freqs[j], p2);
+    //   p2 += (counts[j] - 1) * std::log(freqs[j]) - std::log(factorial(counts[j] - 1));
+    //   sumCounts += counts[j] - 1;
+    // }
+    // 
+    // p2 += std::log(factorial(sumCounts));
+    // // Rprintf("%.7f\n", p2);
+    results[i] += std::log(results[i]); // + p2;
   }
   
   return results;

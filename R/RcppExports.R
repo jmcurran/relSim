@@ -10,11 +10,7 @@
 }
 
 .IS <- function(freqs, N, numContributors, maxAllelesShowing) {
-    .Call('_relSim_IS', PACKAGE = 'relSim', freqs, N, numContributors, maxAllelesShowing)
-}
-
-ISprob <- function(listCombs, Perms) {
-    .Call('_relSim_ISprob', PACKAGE = 'relSim', listCombs, Perms)
+    invisible(.Call('_relSim_IS', PACKAGE = 'relSim', freqs, N, numContributors, maxAllelesShowing))
 }
 
 .locusLRmix <- function(ProfVic, ProfSus, Freq) {

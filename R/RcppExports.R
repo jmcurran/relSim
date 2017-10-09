@@ -9,8 +9,8 @@
     .Call('_relSim_calcFst', PACKAGE = 'relSim', Pop, SubPopIdx, N, ns, nLoci, NumLocusAlleles)
 }
 
-IS <- function(freqs, N, numContributors, numAllelesShowing) {
-    .Call('_relSim_IS', PACKAGE = 'relSim', freqs, N, numContributors, numAllelesShowing)
+.IS <- function(freqs, N, numContributors, maxAllelesShowing) {
+    .Call('_relSim_IS', PACKAGE = 'relSim', freqs, N, numContributors, maxAllelesShowing)
 }
 
 ISprob <- function(listCombs, Perms) {

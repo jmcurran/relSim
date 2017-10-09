@@ -40,9 +40,9 @@ long factorial(long n){
 }
 
 class profileGenerator {
-  NumericVector locusProbs;
-  vector<double> cumProbs;
-  int nAlleles;
+  List< vector<double> > locusProbs;
+  list< vector<double> > cumProbs;
+  vector<int nAlleles;
   
   public:
   class Profile {
@@ -121,7 +121,7 @@ class profileGenerator {
   };
   
   
-  profileGenerator(NumericVector& locus){
+  profileGenerator(List& locus){
     nAlleles = locus.size();
     
     for(int a = 0; a < nAlleles; a++){
@@ -176,15 +176,18 @@ class profileGenerator {
   }
 };
 
-// [[Rcpp::export]]  
-List IS(NumericVector freqs,int N, int numContributors, int numAllelesShowing){
+// [[Rcpp::export(".IS")]]  
+List IS(List freqs,int N, int numContributors){
   profileGenerator g(freqs);
   
   NumericMatrix Alleles(N, freqs.size());
   NumericVector probs(N);
+  IntegerVector numAllelesShowing(N);
+  
+  numAllelesShowing = sample(maxAllelesShowing, N, TRUE);
   
   for(int i = 0; i < N; i++){
-    profileGenerator::Profile p = g.randProf(numContributors, numAllelesShowing);
+    profileGenerator::Profile p = g.randProf(numContributors, numAllelesShowing[i]);
     Alleles(i, _) = p.asNumericVector();
     probs[i] = p.prob(freqs);
   }
@@ -197,25 +200,26 @@ List IS(NumericVector freqs,int N, int numContributors, int numAllelesShowing){
 }
 
 // [[Rcpp::export]]
-NumericVector ISprob(const List& listCombs, const NumericMatrix& Perms){
+NumericVector ISprob(const List& listCombs, const List& Perms){
   int numCombs = listCombs.size();
-  int numAlleles = Perms.ncol();
-  int numPerms = Perms.nrow();
   NumericVector results(numCombs);
   
   for(int i = 0; i < numCombs; i++){
-    
     List lComb = as<List>(listCombs[i]);
     NumericVector freqs = as<NumericVector>(lComb["f"]);
     IntegerVector alleles = as<IntegerVector>(lComb["a"]);
     IntegerVector counts = as<IntegerVector>(lComb["c"]);
+    int numAlleles = as<int>(lComb["n"]);
+    
+    NumericMatrix perms = as<NumericMatrix>(Perms[numAlleles - 1]);
+    int numPerms = perms.nrow();
    
     for(int j = 0; j < numPerms; j++){
       double p , s;
-      p = s = freqs[Perms(j, 0) - 1];
+      p = s = freqs[perms(j, 0) - 1];
       
       for(int k = 1; k < numAlleles; k++){
-        double pk = freqs[Perms(j, k) - 1];
+        double pk = freqs[perms(j, k) - 1];
         p *=  pk / (1 - s);
         s += pk;
       }
@@ -224,20 +228,20 @@ NumericVector ISprob(const List& listCombs, const NumericMatrix& Perms){
     }
     
    // Rprintf("%.7f\n", results[i]);
-    // freqs = freqs / sum(freqs);
-    // 
-    // int sumCounts = 0;
-    // double p2 = 0;
-    // 
-    // for(int j = 0; j < numAlleles; j++){
-    //   // Rprintf("%d %d %.7f %.7f\n", alleles[j], counts[j], freqs[j], p2);
-    //   p2 += (counts[j] - 1) * std::log(freqs[j]) - std::log(factorial(counts[j] - 1));
-    //   sumCounts += counts[j] - 1;
-    // }
-    // 
-    // p2 += std::log(factorial(sumCounts));
-    // // Rprintf("%.7f\n", p2);
-    results[i] += std::log(results[i]); // + p2;
+    freqs = freqs / sum(freqs);
+
+    int sumCounts = 0;
+    double p2 = 0;
+
+    for(int j = 0; j < numAlleles; j++){
+      // Rprintf("%d %d %.7f %.7f\n", alleles[j], counts[j], freqs[j], p2);
+      p2 += (counts[j] - 1) * std::log(freqs[j]) - std::log(factorial(counts[j] - 1));
+      sumCounts += counts[j] - 1;
+    }
+
+    p2 += std::log(factorial(sumCounts));
+    // Rprintf("%.7f\n", p2);
+    results[i] = std::log(results[i]) + p2;
   }
   
   return results;

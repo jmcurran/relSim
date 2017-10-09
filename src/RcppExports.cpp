@@ -36,27 +36,27 @@ BEGIN_RCPP
 END_RCPP
 }
 // IS
-List IS(NumericVector freqs, int N, int numContributors, int numAllelesShowing);
-RcppExport SEXP _relSim_IS(SEXP freqsSEXP, SEXP NSEXP, SEXP numContributorsSEXP, SEXP numAllelesShowingSEXP) {
+List IS(NumericVector freqs, int N, int numContributors, int maxAllelesShowing);
+RcppExport SEXP _relSim_IS(SEXP freqsSEXP, SEXP NSEXP, SEXP numContributorsSEXP, SEXP maxAllelesShowingSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< NumericVector >::type freqs(freqsSEXP);
     Rcpp::traits::input_parameter< int >::type N(NSEXP);
     Rcpp::traits::input_parameter< int >::type numContributors(numContributorsSEXP);
-    Rcpp::traits::input_parameter< int >::type numAllelesShowing(numAllelesShowingSEXP);
-    rcpp_result_gen = Rcpp::wrap(IS(freqs, N, numContributors, numAllelesShowing));
+    Rcpp::traits::input_parameter< int >::type maxAllelesShowing(maxAllelesShowingSEXP);
+    rcpp_result_gen = Rcpp::wrap(IS(freqs, N, numContributors, maxAllelesShowing));
     return rcpp_result_gen;
 END_RCPP
 }
 // ISprob
-NumericVector ISprob(const List& listCombs, const NumericMatrix& Perms);
+NumericVector ISprob(const List& listCombs, const List& Perms);
 RcppExport SEXP _relSim_ISprob(SEXP listCombsSEXP, SEXP PermsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const List& >::type listCombs(listCombsSEXP);
-    Rcpp::traits::input_parameter< const NumericMatrix& >::type Perms(PermsSEXP);
+    Rcpp::traits::input_parameter< const List& >::type Perms(PermsSEXP);
     rcpp_result_gen = Rcpp::wrap(ISprob(listCombs, Perms));
     return rcpp_result_gen;
 END_RCPP

@@ -131,12 +131,21 @@ public:
 
       return dSum + dFact;
     }
+    
+    void print(void){
+      vector<int>::iterator i = epg.begin();
+      while(i != epg.end()){
+        Rprintf("%d ", *i);
+        i++;
+      }
+      Rprintf("\n");
+    }
   };
 
   vector<Locus> profile;
   
   Profile(const ProfileGenerator& pg, int numLoci, int numContributors, 
-          const IntegerVector& numAllelesShowing);
+          const IntegerVector::iterator& numAllelesShowing);
   
   Profile(const Profile& prof){
     profile = prof.profile;
@@ -146,6 +155,14 @@ public:
     profile = prof.profile;
     
     return *this;
+  }
+  
+  void print(void){
+    vector<Locus>::iterator loc = profile.begin();
+    while(loc != profile.end()){
+      loc->print();
+      loc++;
+    }
   }
 };
 
@@ -238,16 +255,17 @@ public:
   
   // [[Rcpp::plugins("cpp11")]]
   
-  Profile randProf(int numContributors, const IntegerVector& numAllelesShowing){
+  Profile randProf(int numContributors, const IntegerVector::iterator& numAllelesShowing){
     Profile prof(*this, numLoci, numContributors, numAllelesShowing);
     return prof;
   }
 };
 
 Profile::Profile(const ProfileGenerator& pg, int numLoci, int numContributors, 
-        const IntegerVector& numAllelesShowing){
+        const IntegerVector::iterator& numAllelesShowing){
   for(int loc = 0; loc < numLoci; loc++){
-      profile.push_back(Locus(pg.freqs[loc], numAllelesShowing[loc], 2 * numContributors));
+    Locus l(pg.freqs[loc], *(numAllelesShowing + loc), 2 * numContributors);
+    profile.push_back(l);
   }
 }
 
@@ -258,13 +276,15 @@ Profile::Locus::Locus(const FreqInfo& fi, int numAlleles, int nTotalAlleles){
 
   // choose numAllelesShowing alleles without replacement
   IntegerVector alleles = seq_len(fi.numAlleles);
-
+ 
   if(numAlleles != fi.numAlleles){
-    alleles = sample(alleles, numAlleles, false, Rcpp::wrap(fi.probs));
+    alleles = sample(alleles, nAlleles, false, Rcpp::wrap(fi.probs));
   }
 
   double sum = 0;
   NumericVector newProbs;
+  
+  epg.resize(fi.numAlleles);
 
   for(IntegerVector::iterator a = alleles.begin(); a != alleles.end(); a++){
     int allele = *a;
@@ -272,7 +292,7 @@ Profile::Locus::Locus(const FreqInfo& fi, int numAlleles, int nTotalAlleles){
     double f = epg[allele - 1];
     newProbs.push_back(f);
     sum += f;
-    // Rprintf("%d\n",*a);
+ //   Rprintf("%d\n",*a);
   }
 
   // normalize
@@ -291,15 +311,16 @@ void IS(List freqs,int N, int numContributors, int maxAllelesShowing){
   ProfileGenerator g(freqs);
   int numLoci = g.numLoci;
 
-  IntegerVector numAllelesShowing = sample(maxAllelesShowing, N * g.numLoci, TRUE);
+  IntegerVector numAllelesShowing = sample(maxAllelesShowing, N * g.numLoci, true);
   
-  list<Profile> profiles;
+  vector<Profile> profiles;
   IntegerVector::iterator nA = numAllelesShowing.begin();
   
   for(int i = 0; i < N; i++){
-    profiles.push_back(g.randProf(numContributors, *(nA + i * numLoci)));
+    profiles.push_back(g.randProf(numContributors, nA + i * numLoci));
+    profiles[i].print();
   }
-  
+
   
   // NumericMatrix Alleles(N, freqs.size());
   // NumericVector probs(N);

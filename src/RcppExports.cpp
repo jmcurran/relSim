@@ -36,16 +36,19 @@ BEGIN_RCPP
 END_RCPP
 }
 // IS
-void IS(List freqs, int N, int numContributors, int maxAllelesShowing);
-RcppExport SEXP _relSim_IS(SEXP freqsSEXP, SEXP NSEXP, SEXP numContributorsSEXP, SEXP maxAllelesShowingSEXP) {
+List IS(List freqs, int N, int numContributors, int maxAllelesShowing, List Perms, bool bTail);
+RcppExport SEXP _relSim_IS(SEXP freqsSEXP, SEXP NSEXP, SEXP numContributorsSEXP, SEXP maxAllelesShowingSEXP, SEXP PermsSEXP, SEXP bTailSEXP) {
 BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< List >::type freqs(freqsSEXP);
     Rcpp::traits::input_parameter< int >::type N(NSEXP);
     Rcpp::traits::input_parameter< int >::type numContributors(numContributorsSEXP);
     Rcpp::traits::input_parameter< int >::type maxAllelesShowing(maxAllelesShowingSEXP);
-    IS(freqs, N, numContributors, maxAllelesShowing);
-    return R_NilValue;
+    Rcpp::traits::input_parameter< List >::type Perms(PermsSEXP);
+    Rcpp::traits::input_parameter< bool >::type bTail(bTailSEXP);
+    rcpp_result_gen = Rcpp::wrap(IS(freqs, N, numContributors, maxAllelesShowing, Perms, bTail));
+    return rcpp_result_gen;
 END_RCPP
 }
 // locusLRmix_Caller
@@ -226,7 +229,7 @@ END_RCPP
 static const R_CallMethodDef CallEntries[] = {
     {"_relSim_breed", (DL_FUNC) &_relSim_breed, 4},
     {"_relSim_calcFst", (DL_FUNC) &_relSim_calcFst, 6},
-    {"_relSim_IS", (DL_FUNC) &_relSim_IS, 4},
+    {"_relSim_IS", (DL_FUNC) &_relSim_IS, 6},
     {"_relSim_locusLRmix_Caller", (DL_FUNC) &_relSim_locusLRmix_Caller, 3},
     {"_relSim_LRmix", (DL_FUNC) &_relSim_LRmix, 3},
     {"_relSim_locusIBS", (DL_FUNC) &_relSim_locusIBS, 2},

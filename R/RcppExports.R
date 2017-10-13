@@ -9,8 +9,8 @@
     .Call('_relSim_calcFst', PACKAGE = 'relSim', Pop, SubPopIdx, N, ns, nLoci, NumLocusAlleles)
 }
 
-.IS <- function(freqs, N, numContributors, maxAllelesShowing) {
-    invisible(.Call('_relSim_IS', PACKAGE = 'relSim', freqs, N, numContributors, maxAllelesShowing))
+.IS <- function(freqs, N, numContributors, maxAllelesShowing, Perms, bTail = FALSE) {
+    .Call('_relSim_IS', PACKAGE = 'relSim', freqs, N, numContributors, maxAllelesShowing, Perms, bTail)
 }
 
 .locusLRmix <- function(ProfVic, ProfSus, Freq) {

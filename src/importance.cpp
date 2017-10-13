@@ -49,8 +49,13 @@ public:
     int nAlleles;
     int numTotalAlleles;
     long numTotalAllelesFactorial;
-    map<int, int> mapCounts;
     vector<int> epg;
+    double gx, hx, wx;
+    
+    vector<int> alleles;
+    vector<double> freqs;
+    map<int, int> mapCounts;
+    
 
   public:
     Locus(const FreqInfo& fi, int numAlleles, int nTotalAlleles);
@@ -59,16 +64,30 @@ public:
       nAlleles = loc.nAlleles;
       numTotalAlleles = loc.numTotalAlleles;
       numTotalAllelesFactorial = loc.numTotalAllelesFactorial;
-      mapCounts = loc.mapCounts;
+      
       epg = loc.epg;
+      gx = loc.gx;
+      hx = loc.hx;
+      wx = loc.wx;
+      
+      alleles = loc.alleles;
+      mapCounts = loc.mapCounts;
+      freqs = loc.freqs;
     }
     
     Locus& operator=(const Locus& loc){
       nAlleles = loc.nAlleles;
       numTotalAlleles = loc.numTotalAlleles;
       numTotalAllelesFactorial = loc.numTotalAllelesFactorial;
+      
       epg = loc.epg;
+      gx = loc.gx;
+      hx = loc.hx;
+      wx = loc.wx;
+      
+      alleles = loc.alleles;
       mapCounts = loc.mapCounts;
+      freqs = loc.freqs;
       
       return *this;
     }
@@ -87,21 +106,6 @@ public:
       return mapCounts[a];
     }
 
-    List asList(){
-      List result;
-      map<int, int>::iterator i = mapCounts.begin();
-      ostringstream oss;
-
-      while(i != mapCounts.end()){
-        oss << i->first;
-        result[oss.str().c_str()] = i->second;
-        oss.str("");
-        i++;
-      }
-
-      return result;
-    }
-
     NumericVector asNumericVector(){
       NumericVector result(nAlleles);
       map<int, int>::iterator i = mapCounts.begin();
@@ -114,24 +118,82 @@ public:
       return result;
     }
 
-    double prob(NumericVector& locusProbs, bool bLog = true){
+    void calcProb(const vector<double>& probs, bool bLog = true){
       map<int, int>::iterator i = mapCounts.begin();
       double dSum = 0;
 
       if(mapCounts.size() == 1)
-        return (i->second) * std::log(locusProbs[i->first - 1]);
+        gx = (i->second) * std::log(probs[i->first]);
 
       double dFact = std::log(numTotalAllelesFactorial);
 
       while(i != mapCounts.end()){
-        dSum += (i->second) * std::log(locusProbs[i->first - 1]);
+        dSum += (i->second) * std::log(probs[i->first]);
         dFact -= std::log(factorial(i->second));
         i++;
       }
 
-      return dSum + dFact;
+      gx = dSum + dFact;
     }
     
+    double ISprob(const vector<NumericMatrix>& perms, bool bTail = false, bool bLog = true){
+      double result = 0;
+      
+      NumericMatrix m;
+      double correct = 0;
+      
+      if(bTail){
+        m = as<NumericMatrix>(perms[nAlleles - 1]);
+        correct = std::log(perms.size());
+      }else{
+        m = as<NumericMatrix>(perms[0]);
+      }
+      int numPerms = m.nrow();
+      //Rprintf("%d\n", numPerms);
+      
+      for(int i = 0; i < numPerms; i++){
+        double p , s;
+        p = s = freqs[m(i, 0) - 1];
+        
+        for(int j = 1; j < nAlleles; j++){
+          double pj = freqs[m(i, j) - 1];
+          p *=  pj / (1 - s);
+          s += pj;
+      }
+        //Rprintf("p = %.7f\n", p);
+        result += p;
+      }
+      
+      //Rprintf("%.7f\n", result);
+      // for(vector<double>::iterator i = freqs.begin(); i != freqs.end(); i++){
+      //   Rprintf("%.7f\n", *i);
+      // }
+      double normConst = std::accumulate(freqs.begin(), freqs.end(), 0.0);
+      // Rprintf("%.7f\n", normConst);
+      
+      int sumCounts = 0;
+      double p2 = 0;
+      
+      for(int j = 0; j < nAlleles; j++){
+      // Rprintf("%d %d %.7f %.7f\n", alleles[j], counts[j], freqs[j], p2);
+        int a = alleles[j] - 1;
+        int c = mapCounts[a];
+        p2 += (c - 1) * std::log(freqs[j] / normConst) - std::log(factorial(c - 1));
+        sumCounts += mapCounts[a] - 1;
+      }
+      
+      p2 += std::log(factorial(sumCounts));
+      // Rprintf("%.7f\n", p2);
+      result = std::log(result) + p2 + correct;
+      hx = result; // store in case you don't want to recalc
+      //Rprintf("%.7f\n", result);
+      return result;
+      }
+    
+    double prob(void){
+    		return gx;
+    }
+
     void print(void){
       vector<int>::iterator i = epg.begin();
       while(i != epg.end()){
@@ -140,12 +202,37 @@ public:
       }
       Rprintf("\n");
     }
+    
+    List toList(){
+      List result;
+      
+      result["n"] = nAlleles;
+      result["epg"] = Rcpp::wrap(epg);
+      result["a"] = Rcpp::wrap(alleles);
+      result["f"] = freqs;
+      
+      result["gx"] = gx;
+      
+      vector<int>::iterator i = alleles.begin();
+      IntegerVector counts;
+      
+      while(i != alleles.end()){
+        counts.push_back(mapCounts[*i -1]);
+        i++;
+      }
+      result["c"] = counts;
+      
+      return result;
+    }
+    
   };
 
   vector<Locus> profile;
   
   Profile(const ProfileGenerator& pg, int numLoci, int numContributors, 
           const IntegerVector::iterator& numAllelesShowing);
+  
+  Profile(const ProfileGenerator& pg, int numLoci, int numContributors, int numAllelesShowing);
   
   Profile(const Profile& prof){
     profile = prof.profile;
@@ -157,6 +244,29 @@ public:
     return *this;
   }
   
+  NumericVector ISprob(const vector<NumericMatrix>& perms, bool bTail = false, bool bLog = false){
+    
+    int numLoci = profile.size();
+    NumericVector locusResults(numLoci);
+    
+    for(int loc = 0; loc < numLoci; loc++){
+      locusResults[loc] = profile[loc].ISprob(perms, bTail);
+    }
+    
+    return locusResults;
+  }
+  
+  NumericVector prob(){
+	  int numLoci = profile.size();
+	  NumericVector locusResults(numLoci);
+
+	  for(int loc = 0; loc < numLoci; loc++){
+	  	locusResults[loc] = profile[loc].prob();
+	  }
+
+	  return locusResults;
+	}
+
   void print(void){
     vector<Locus>::iterator loc = profile.begin();
     while(loc != profile.end()){
@@ -164,6 +274,19 @@ public:
       loc++;
     }
   }
+  
+  List toList(void){
+    List l;
+    int numLoci = profile.size();
+  
+    for(int loc = 0; loc < numLoci; loc++){
+      l.push_back(profile[loc].toList());
+    }
+    
+    return l;
+  }
+  
+  
 };
 
 class FreqInfo {
@@ -259,12 +382,24 @@ public:
     Profile prof(*this, numLoci, numContributors, numAllelesShowing);
     return prof;
   }
+  
+  Profile randProf(int numContributors, int numAllelesShowing){
+    Profile prof(*this, numLoci, numContributors, numAllelesShowing);
+    return prof;
+  }
 };
 
 Profile::Profile(const ProfileGenerator& pg, int numLoci, int numContributors, 
         const IntegerVector::iterator& numAllelesShowing){
   for(int loc = 0; loc < numLoci; loc++){
     Locus l(pg.freqs[loc], *(numAllelesShowing + loc), 2 * numContributors);
+    profile.push_back(l);
+  }
+}
+
+Profile::Profile(const ProfileGenerator& pg, int numLoci, int numContributors, int numAllelesShowing){
+  for(int loc = 0; loc < numLoci; loc++){
+    Locus l(pg.freqs[loc], numAllelesShowing, 2 * numContributors);
     profile.push_back(l);
   }
 }
@@ -279,7 +414,10 @@ Profile::Locus::Locus(const FreqInfo& fi, int numAlleles, int nTotalAlleles){
  
   if(numAlleles != fi.numAlleles){
     alleles = sample(alleles, nAlleles, false, Rcpp::wrap(fi.probs));
+    sort(alleles.begin(), alleles.end()); // this makes sure that the stored probabilities are in the right order
   }
+  
+  this->alleles = as< vector<int> >(alleles);
 
   double sum = 0;
   NumericVector newProbs;
@@ -287,39 +425,77 @@ Profile::Locus::Locus(const FreqInfo& fi, int numAlleles, int nTotalAlleles){
   epg.resize(fi.numAlleles);
 
   for(IntegerVector::iterator a = alleles.begin(); a != alleles.end(); a++){
-    int allele = *a;
-    epg[allele - 1] = 1;
-    double f = epg[allele - 1];
-    newProbs.push_back(f);
+    int allele = *a - 1;
+    epg[allele] = 1;
+    double f = fi.probs[allele];
     sum += f;
+    freqs.push_back(f); // NOTE: This should be in order since we ordered the alleles;
+    mapCounts[allele] = 1;
  //   Rprintf("%d\n",*a);
   }
 
   // normalize
+  newProbs = Rcpp::wrap(freqs);
   newProbs = newProbs / sum;
   alleles = sample(alleles, numTotalAlleles - numAlleles, true, newProbs);
 
   for(IntegerVector::iterator a = alleles.begin(); a != alleles.end(); a++){
     epg[*a - 1] += 1;
+    mapCounts[*a - 1] += 1;
   }
+
+  // calculate probability under target density
+  calcProb(fi.probs);
 }
         
 
 
 // [[Rcpp::export(".IS")]]  
-void IS(List freqs,int N, int numContributors, int maxAllelesShowing){
+List IS(List freqs,int N, int numContributors, int maxAllelesShowing, List Perms, bool bTail = false){
+  
+  // copy the elements of Perms into a vector for quick random access.
+  vector<NumericMatrix> perms;
+  List::iterator p = Perms.begin();
+  while(p != Perms.end()){
+    NumericMatrix m = as<NumericMatrix>(*p);
+    perms.push_back(m);
+    p++;
+  }
+  
+  
   ProfileGenerator g(freqs);
   int numLoci = g.numLoci;
 
-  IntegerVector numAllelesShowing = sample(maxAllelesShowing, N * g.numLoci, true);
+  IntegerVector numAllelesShowing;
+  NumericMatrix denoms(N, numLoci);
+  NumericMatrix numers(N, numLoci);
+    
   
-  vector<Profile> profiles;
-  IntegerVector::iterator nA = numAllelesShowing.begin();
-  
-  for(int i = 0; i < N; i++){
-    profiles.push_back(g.randProf(numContributors, nA + i * numLoci));
-    profiles[i].print();
+  if(bTail){
+    numAllelesShowing = sample(maxAllelesShowing, N * g.numLoci, true);
+ 
+     //vector<Profile> profiles;
+    IntegerVector::iterator nA = numAllelesShowing.begin();
+
+    for(int i = 0; i < N; i++){
+      Profile p = g.randProf(numContributors, nA + i * numLoci);
+      numers(i,_) = p.prob();
+      denoms(i,_) = p.ISprob(perms, bTail);
+    }
+  }else{
+    int numAllelesShowing = maxAllelesShowing;
+
+    for(int i = 0; i < N; i++){
+      Profile p = g.randProf(numContributors, numAllelesShowing);
+      numers(i,_) = p.prob();
+      denoms(i,_) = p.ISprob(perms, bTail);
+    }
   }
+  
+  List results;
+  results["numerator"] = numers;
+  results["denominator"] = denoms;
+  return results;
 
   
   // NumericMatrix Alleles(N, freqs.size());

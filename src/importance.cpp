@@ -149,7 +149,7 @@ public:
         m = as<NumericMatrix>(perms[0]);
       }
       int numPerms = m.nrow();
-      //Rprintf("%d\n", numPerms);
+      // Rprintf("%d, %d\n", nAlleles, numPerms);
       
       for(int i = 0; i < numPerms; i++){
         double p , s;
@@ -159,36 +159,38 @@ public:
           double pj = freqs[m(i, j) - 1];
           p *=  pj / (1 - s);
           s += pj;
-      }
-        //Rprintf("p = %.7f\n", p);
+        }
+        // Rprintf("p = %.7f\n", p);
         result += p;
       }
       
-      //Rprintf("%.7f\n", result);
+      // Rprintf("%.7f\n", result);
       // for(vector<double>::iterator i = freqs.begin(); i != freqs.end(); i++){
-      //   Rprintf("%.7f\n", *i);
+      //    Rprintf("f = %.7f\n", *i);
       // }
       double normConst = std::accumulate(freqs.begin(), freqs.end(), 0.0);
-      // Rprintf("%.7f\n", normConst);
+      // Rprintf("sum f = %.7f\n", normConst);
       
       int sumCounts = 0;
       double p2 = 0;
       
       for(int j = 0; j < nAlleles; j++){
-      // Rprintf("%d %d %.7f %.7f\n", alleles[j], counts[j], freqs[j], p2);
         int a = alleles[j] - 1;
         int c = mapCounts[a];
-        p2 += (c - 1) * std::log(freqs[j] / normConst) - std::log(factorial(c - 1));
-        sumCounts += mapCounts[a] - 1;
+        if(c > 1){
+          p2 += (c - 1) * std::log(freqs[j] / normConst) - std::log(factorial(c - 1));
+          sumCounts += (c - 1);
+        }
+        // Rprintf("%d %d %.7f %.7f\n", a, c, freqs[j], p2);
       }
       
       p2 += std::log(factorial(sumCounts));
-      // Rprintf("%.7f\n", p2);
+      // Rprintf("%.7f %.7f %.7f\n", log(result), p2, correct);
       result = std::log(result) + p2 + correct;
       hx = result; // store in case you don't want to recalc
-      //Rprintf("%.7f\n", result);
+      // Rprintf("%.7f\n", result);
       return result;
-      }
+    }
     
     double prob(void){
     		return gx;
@@ -244,7 +246,7 @@ public:
     return *this;
   }
   
-  NumericVector ISprob(const vector<NumericMatrix>& perms, bool bTail = false, bool bLog = false){
+  NumericVector ISprob(const vector<NumericMatrix>& perms, bool bTail = false, bool bLog = true){
     
     int numLoci = profile.size();
     NumericVector locusResults(numLoci);
@@ -466,19 +468,19 @@ List IS(List freqs,int N, int numContributors, int maxAllelesShowing, List Perms
   ProfileGenerator g(freqs);
   int numLoci = g.numLoci;
 
-  IntegerVector numAllelesShowing;
   NumericMatrix denoms(N, numLoci);
   NumericMatrix numers(N, numLoci);
     
   
   if(bTail){
-    numAllelesShowing = sample(maxAllelesShowing, N * g.numLoci, true);
+    IntegerVector numAllelesShowing = sample(maxAllelesShowing, N * numLoci, true);
  
      //vector<Profile> profiles;
     IntegerVector::iterator nA = numAllelesShowing.begin();
 
     for(int i = 0; i < N; i++){
       Profile p = g.randProf(numContributors, nA + i * numLoci);
+      //p.print();
       numers(i,_) = p.prob();
       denoms(i,_) = p.ISprob(perms, bTail);
     }

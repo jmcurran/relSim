@@ -144,7 +144,7 @@ public:
       
       if(bTail){
         m = as<NumericMatrix>(perms[nAlleles - 1]);
-        correct = std::log(perms.size());
+        correct = 0;//std::log(perms.size());
       }else{
         m = as<NumericMatrix>(perms[0]);
       }
@@ -410,7 +410,7 @@ Profile::Locus::Locus(const FreqInfo& fi, int numAlleles, int nTotalAlleles){
   nAlleles = numAlleles;
   numTotalAlleles = nTotalAlleles;
   numTotalAllelesFactorial = factorial(numTotalAlleles);
-
+  
   // choose numAllelesShowing alleles without replacement
   IntegerVector alleles = seq_len(fi.numAlleles);
  
@@ -468,6 +468,7 @@ List IS(List freqs,int N, int numContributors, int maxAllelesShowing, List Perms
   ProfileGenerator g(freqs);
   int numLoci = g.numLoci;
 
+  List results;
   NumericMatrix denoms(N, numLoci);
   NumericMatrix numers(N, numLoci);
     
@@ -482,19 +483,21 @@ List IS(List freqs,int N, int numContributors, int maxAllelesShowing, List Perms
       Profile p = g.randProf(numContributors, nA + i * numLoci);
       //p.print();
       numers(i,_) = p.prob();
-      denoms(i,_) = p.ISprob(perms, bTail);
+      denoms(i,_) = p.ISprob(perms, true);
     }
+    
+    // store the number of peaks -- for debugging mostly.
+    results["numPeaks"] = numAllelesShowing;
   }else{
     int numAllelesShowing = maxAllelesShowing;
 
     for(int i = 0; i < N; i++){
       Profile p = g.randProf(numContributors, numAllelesShowing);
       numers(i,_) = p.prob();
-      denoms(i,_) = p.ISprob(perms, bTail);
+      denoms(i,_) = p.ISprob(perms, false);
     }
   }
   
-  List results;
   results["numerator"] = numers;
   results["denominator"] = denoms;
   return results;

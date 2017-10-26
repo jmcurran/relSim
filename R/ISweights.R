@@ -38,6 +38,11 @@ IS = function(freqs, numContributors = 4, maxPeaks = NULL, numIterations = 100, 
     }
     
     r = .IS(freqs, numIterations, numContributors[1], maxPeaks, perms, TRUE)
+    ## This correction implies the probabilities under the target density
+    ## are too small by a factor of maxPeaks = 2 * apparent contribs
+    ## but not sure why - this should not affect the target probabilities
+    ## or the importance probabilities are too big by a factor of 2 * apparent contribs
+    r$numerator = r$numerator + log(maxPeaks) 
     
   }else{
     if(is.null(maxPeaks) || maxPeaks < 1 || maxPeaks > 2 * numContributors){
@@ -45,8 +50,12 @@ IS = function(freqs, numContributors = 4, maxPeaks = NULL, numIterations = 100, 
            This should be a number between 1 and 2 * numContributors.\n")
     }
     
-    m = initMC(1:maxPeaks)
-    perms = list(allPerm(m))
+    if(maxPeaks > 1){
+      m = initMC(1:maxPeaks)
+      perms = list(allPerm(m))
+    }else{
+      perms = list(matrix(1, 1, 1))
+    }
     r = .IS(freqs, numIterations, numContributors, maxPeaks, perms)
   }
   # perms = vector(length = maxPeaks, mode = "list")

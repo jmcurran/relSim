@@ -1,7 +1,7 @@
 #' @export
 testIS = function(nc = c(3, 2), locus = 1, seed = 123456){
   set.seed(seed)
-  np = 2 * nc2
+  np = 2 * nc[2]
   for(i in 1:np){
     cmd = paste0("p",i," = IS(USCaucs$freqs[locus], numContributors = nc[1], maxPeaks =  ", i,", numIterations = 1e5)")
     cat(cmd, "\n")

@@ -449,12 +449,62 @@ Profile::Locus::Locus(const FreqInfo& fi, int numAlleles, int nTotalAlleles){
   // calculate probability under target density
   calcProb(fi.probs);
 }
-        
 
+NumericVector p1(List freqs, int numContributors){
+  int numLoci = freqs.size();
+  NumericVector probs(numLoci);
+  
+  for(int loc = 0; loc < numLoci; loc++){
+    NumericVector locus = as<NumericVector>(freqs[loc]);
+    probs[loc] = accumulate(locus.begin(), locus.end(), 0.0, 
+                            [numContributors](double dSum, double const& pi){
+                              return dSum + pow(pi, 2 * numContributors);
+                            });
+  }
+  
+  return probs;
+}
+        
+NumericVector p2(List freqs, int numContributors){
+  int numLoci = freqs.size();
+  NumericVector probs(numLoci);
+  
+  IntegerVector m(2 * numContributors - 1);
+  m[0] = 2 * numContributors;
+  for(int x = 1; x < 2 * numContributors - 1; x++){
+    m[x] = m[x - 1] * (2 * numContributors - x) / (x + 1);
+  }
+  
+  for(int loc = 0; loc < numLoci; loc++){
+    NumericVector px = as<NumericVector>(freqs[loc]);
+    int numAlleles = px.size();
+    
+    for(int x = 1; x < 2 * numContributors; x++){
+      for(int i = 0; i < numAlleles - 1; i++){
+        for(int j = i + 1; j < numAlleles; j++){
+          probs[loc] += m[x - 1] * pow(px[i], x) * pow(px[j], 2 * numContributors - x);
+         // Rprintf("%d %.7f %.7f\n", m[x - 1], pow(px[i], x), pow(px[j], 2 * numContributors - x));
+        }
+      }
+    }
+  }
+    
+  return probs;
+}
 
 // [[Rcpp::export(".IS")]]  
 List IS(List freqs,int N, int numContributors, int maxAllelesShowing, List Perms, bool bTail = false){
   
+  if(maxAllelesShowing == 1){
+    List result;
+    result["est"] = p1(freqs, numContributors);
+    return result;
+  }else if(maxAllelesShowing == 2 && !bTail){
+    List result;
+    result["est"] = p2(freqs, numContributors);
+    return result;
+  }
+  //else
   // copy the elements of Perms into a vector for quick random access.
   vector<NumericMatrix> perms;
   List::iterator p = Perms.begin();
@@ -474,7 +524,17 @@ List IS(List freqs,int N, int numContributors, int maxAllelesShowing, List Perms
     
   
   if(bTail){
-    IntegerVector numAllelesShowing = sample(maxAllelesShowing, N * numLoci, true);
+    if(maxAllelesShowing == 1){
+      List result;
+      result["est"] = p1(freqs, numContributors) + p2(freqs, numContributors);
+      return result;
+    }else if (maxAllelesShowing == 2){
+      List result;
+      result["est"] = p1(freqs, numContributors) + p2(freqs, numContributors);
+      return result;
+    }
+    
+    IntegerVector numAllelesShowing = sample(maxAllelesShowing - 2, N * numLoci, true) + 2;
  
      //vector<Profile> profiles;
     IntegerVector::iterator nA = numAllelesShowing.begin();
@@ -488,6 +548,9 @@ List IS(List freqs,int N, int numContributors, int maxAllelesShowing, List Perms
     
     // store the number of peaks -- for debugging mostly.
     results["numPeaks"] = numAllelesShowing;
+    
+    results["p12"] = p1(freqs, numContributors) + p2(freqs, numContributors);
+    
   }else{
     int numAllelesShowing = maxAllelesShowing;
 

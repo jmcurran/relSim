@@ -42,7 +42,7 @@ IS = function(freqs, numContributors = 4, maxPeaks = NULL, numIterations = 100, 
     ## are too small by a factor of maxPeaks = 2 * apparent contribs
     ## but not sure why - this should not affect the target probabilities
     ## or the importance probabilities are too big by a factor of 2 * apparent contribs
-    r$numerator = r$numerator + log(maxPeaks) 
+    r$numerator = r$numerator + log(maxPeaks - 2) 
     
   }else{
     if(is.null(maxPeaks) || maxPeaks < 1 || maxPeaks > 2 * numContributors){

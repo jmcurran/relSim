@@ -785,6 +785,25 @@ public:
   }
 };
 
+//' Search a database for siblings or children
+//' 
+//' This function searches a database of profiles for either a sibling or a child
+//' @param profiles an integer vector of stacked profiles representing the database. This vector has \eqn{2NL} entries, where N is the number of
+//' profiles and L is the number of loci.
+//' @param siblings an integer vector of stacked profiles representing the siblings of the profiles in database. 
+//' The first entry is a sibling of the first entry in \code{profiles} and so on. This vector has \eqn{2NL} entries, where N is the number of
+//' profiles and L is the number of loci.
+//' @param children an integer vector of stacked profiles representing the children of the profiles in database. 
+//' The first entry is a child of the first entry in \code{profiles} and so on. This vector has \eqn{2NL} entries, where N is the number of
+//' profiles and L is the number of loci.
+//' @param listFreqs is a set of allele frequencies representing a particular multiplex. The function assumes that that loci in the profiles
+//' are in the same order as the loci in this list. The data structure is a \code{List} of \code{NumericVector}'s.
+//' 
+//' @returns a \code{List} containing two dataframes, one called \code{sibs} and one called \code{children}. Each dataframe has results from searching for
+//' either the sibling
+//' 
+//' @author James Curran
+//' @export
 // [[Rcpp::export]]  
 List famSearch(IntegerVector& profiles, IntegerVector& siblings, IntegerVector& children, List& listFreqs){
   
@@ -797,8 +816,16 @@ List famSearch(IntegerVector& profiles, IntegerVector& siblings, IntegerVector& 
   NumericVector sibTopRankedLR(nProfiles), sibTopRankedID(nProfiles), sibActualLR(nProfiles), sibActualRank(nProfiles);
   NumericVector childTopRankedLR(nProfiles), childTopRankedID(nProfiles), childActualLR(nProfiles), childActualRank(nProfiles);
   
+  int onePct = (int)floor(nProfiles / 100);
+  int ctr = 1;
+  
   
   for(int prof1 = 0; prof1 < nProfiles; prof1++){
+    
+    if(ctr % onePct == 0){
+      Rprintf("%d %%\n", ctr);
+    }
+    
     int nOffsetRel = 2 * nLoci * prof1;
     IntegerVector::const_iterator iSib = siblings.begin() + nOffsetRel;
     IntegerVector::const_iterator iChild = children.begin() + nOffsetRel;
@@ -838,7 +865,10 @@ List famSearch(IntegerVector& profiles, IntegerVector& siblings, IntegerVector& 
     
     childActualRank[prof1] = i2 + 1;
     childActualLR[prof1] = childResults[i2].dLR;
+    
+    ctr = ctr + 1;
   } 
+  Rprintf("\n");
   
   List results;
   

@@ -226,7 +226,7 @@ BEGIN_RCPP
 END_RCPP
 }
 // famSearch
-int famSearch(IntegerVector& profiles, IntegerVector& siblings, IntegerVector& children, List& listFreqs);
+List famSearch(IntegerVector& profiles, IntegerVector& siblings, IntegerVector& children, List& listFreqs);
 RcppExport SEXP _relSim_famSearch(SEXP profilesSEXP, SEXP siblingsSEXP, SEXP childrenSEXP, SEXP listFreqsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;

@@ -791,8 +791,6 @@ List famSearch(IntegerVector& profiles, IntegerVector& siblings, IntegerVector& 
   int nLoci = listFreqs.size();
   int nProfiles = profiles.size() / (2 * nLoci);
   
-  Rprintf("%d %d\n", nLoci, nProfiles);
-  
   std::vector<LR> sibResults(nProfiles);
   std::vector<LR> childResults(nProfiles);
   
@@ -819,10 +817,10 @@ List famSearch(IntegerVector& profiles, IntegerVector& siblings, IntegerVector& 
     std::sort(childResults.begin(), childResults.end(), [](const LR &a, const LR &b) -> bool {
       return a.dLR > b.dLR;});
     
-    sibTopRankedID[prof1] = childResults[0].nIDD;
-    sibTopRankedLR[prof1] = childResults[0].dLR;
+    sibTopRankedID[prof1] = sibResults[0].nIDD + 1; //The +1's are to get rid of 0 based ranks
+    sibTopRankedLR[prof1] = sibResults[0].dLR;
     
-    childTopRankedID[prof1] = childResults[0].nIDD;
+    childTopRankedID[prof1] = childResults[0].nIDD + 1;
     childTopRankedLR[prof1] = childResults[0].dLR;
     
     int i1 = 0;
@@ -830,20 +828,30 @@ List famSearch(IntegerVector& profiles, IntegerVector& siblings, IntegerVector& 
       i1++;
     }
     
-    
+    sibActualRank[prof1] = i1 + 1;
+    sibActualLR[prof1] = sibResults[i1].dLR;
     
     int i2 = 0;
     while(childResults[i2].nIDD != prof1){
       i2++;
     }
     
-    
-    
-    
-    
-    
+    childActualRank[prof1] = i2 + 1;
+    childActualLR[prof1] = childResults[i2].dLR;
   } 
   
-  return 1;
+  List results;
+  
+  results["sibs"] = DataFrame::create(_["topRankedID"] = sibTopRankedID, 
+                                           _["topRankedLR"] = sibTopRankedLR,
+                                           _["actualRank"] = sibActualRank,
+                                           _["actualLR"] = sibActualLR);
+  
+  results["children"] = DataFrame::create(_["topRankedID"] = childTopRankedID, 
+                                  _["topRankedLR"] = childTopRankedLR,
+                                  _["actualRank"] = childActualRank,
+                                  _["actualLR"] = childActualLR);
+  
+  return(results); 
 }
 

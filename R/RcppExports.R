@@ -65,6 +65,26 @@ blockStats <- function(Prof1, Prof2, nProf, listFreqs, nCode) {
     .Call('_relSim_simNpersonMixture', PACKAGE = 'relSim', listFreqs, numContributors, numIterations)
 }
 
+#' Search a database for siblings or children
+#' 
+#' This function searches a database of profiles for either a sibling or a child
+#' @param profiles an integer vector of stacked profiles representing the database. This vector has \eqn{2NL} entries, where N is the number of
+#' profiles and L is the number of loci.
+#' @param siblings an integer vector of stacked profiles representing the siblings of the profiles in database. 
+#' The first entry is a sibling of the first entry in \code{profiles} and so on. This vector has \eqn{2NL} entries, where N is the number of
+#' profiles and L is the number of loci.
+#' @param children an integer vector of stacked profiles representing the children of the profiles in database. 
+#' The first entry is a child of the first entry in \code{profiles} and so on. This vector has \eqn{2NL} entries, where N is the number of
+#' profiles and L is the number of loci.
+#' @param listFreqs is a set of allele frequencies representing a particular multiplex. The function assumes that that loci in the profiles
+#' are in the same order as the loci in this list. The data structure is a \code{List} of \code{NumericVector}'s.
+#' 
+#' @return a \code{List} containing two dataframes, one called \code{sibs} and one called \code{children}. Each dataframe has results from searching for
+#' either the sibling or the child in the database. For each entry there is a record of which profile gave the highest LR (and its value),
+#' and the position of the actual sibling or parent/child in the database (and its respective LR).
+#' 
+#' @author James Curran
+#' @export
 famSearch <- function(profiles, siblings, children, listFreqs) {
     .Call('_relSim_famSearch', PACKAGE = 'relSim', profiles, siblings, children, listFreqs)
 }

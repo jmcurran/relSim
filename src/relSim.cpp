@@ -799,8 +799,9 @@ public:
 //' @param listFreqs is a set of allele frequencies representing a particular multiplex. The function assumes that that loci in the profiles
 //' are in the same order as the loci in this list. The data structure is a \code{List} of \code{NumericVector}'s.
 //' 
-//' @returns a \code{List} containing two dataframes, one called \code{sibs} and one called \code{children}. Each dataframe has results from searching for
-//' either the sibling
+//' @return a \code{List} containing two dataframes, one called \code{sibs} and one called \code{children}. Each dataframe has results from searching for
+//' either the sibling or the child in the database. For each entry there is a record of which profile gave the highest LR (and its value),
+//' and the position of the actual sibling or parent/child in the database (and its respective LR).
 //' 
 //' @author James Curran
 //' @export

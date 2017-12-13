@@ -831,41 +831,80 @@ List famSearch(IntegerVector& profiles, IntegerVector& siblings, IntegerVector& 
     IntegerVector::const_iterator iSib = siblings.begin() + nOffsetRel;
     IntegerVector::const_iterator iChild = children.begin() + nOffsetRel;
     
+    double dSibLRMax, dChildLRMax;
+    double dSibLR, dChildLR;
+    int nSibRank, nChildRank;
+    int nSibTopRankID, nChildTopRankID;
+    
+    dSibLRMax = dChildLRMax = -DBL_MAX;
+    nSibRank = nChildRank = 0;
+    nSibTopRankID = nChildTopRankID = 0;
     
     for(int prof2 = 0; prof2 < nProfiles; prof2++){
-      int nOffset = 2 * nLoci * prof2;
-      IntegerVector::const_iterator iProf = profiles.begin() + nOffset;
-      
-      sibResults[prof2] = LR(lrSib(iProf, iSib, listFreqs), prof1, prof2);
-      childResults[prof2]= LR(lrPC(iProf, iChild, listFreqs), prof1, prof2);
+        int nOffset = 2 * nLoci * prof2;
+        IntegerVector::const_iterator iProf = profiles.begin() + nOffset;
+
+        dSibLR = lrSib(iProf, iSib, listFreqs);
+        dChildLR = lrPC(iProf, iChild, listFreqs);
+        
+        if(dSibLR > dSibLRMax){
+          dSibLRMax = dSibLR;
+          nSibTopRankID = prof1 + 1;
+          nSibRank++;
+        }
+        
+        if(dChildLR > dChildLRMax){
+          dChildLRMax = dChildLR;
+          nChildTopRankID = prof1 + 1;
+          nChildRank++;
+        }
     }
     
-    std::sort(sibResults.begin(), sibResults.end(), [](const LR &a, const LR &b) -> bool {
-      return a.dLR > b.dLR;});
-    std::sort(childResults.begin(), childResults.end(), [](const LR &a, const LR &b) -> bool {
-      return a.dLR > b.dLR;});
     
-    sibTopRankedID[prof1] = sibResults[0].nIDD + 1; //The +1's are to get rid of 0 based ranks
-    sibTopRankedLR[prof1] = sibResults[0].dLR;
+    sibTopRankedID[prof1] = nSibTopRankID; 
+    sibTopRankedLR[prof1] = dSibLRMax;
+    sibActualLR[prof1] = nSibRank + 1;
+    sibActualLR[prof1] = dSibLR;
+
+    sibTopRankedID[prof1] = nSibTopRankID; 
+    sibTopRankedLR[prof1] = dSibLRMax;
+    sibActualLR[prof1] = nSibRank + 1;
+    sibActualLR[prof1] = dSibLR;
     
-    childTopRankedID[prof1] = childResults[0].nIDD + 1;
-    childTopRankedLR[prof1] = childResults[0].dLR;
-    
-    int i1 = 0;
-    while(sibResults[i1].nIDD != prof1){
-      i1++;
-    }
-    
-    sibActualRank[prof1] = i1 + 1;
-    sibActualLR[prof1] = sibResults[i1].dLR;
-    
-    int i2 = 0;
-    while(childResults[i2].nIDD != prof1){
-      i2++;
-    }
-    
-    childActualRank[prof1] = i2 + 1;
-    childActualLR[prof1] = childResults[i2].dLR;
+    // for(int prof2 = 0; prof2 < nProfiles; prof2++){
+    //   int nOffset = 2 * nLoci * prof2;
+    //   IntegerVector::const_iterator iProf = profiles.begin() + nOffset;
+    //   
+    //   sibResults[prof2] = LR(lrSib(iProf, iSib, listFreqs), prof1, prof2);
+    //   childResults[prof2]= LR(lrPC(iProf, iChild, listFreqs), prof1, prof2);
+    // }
+    // 
+    // std::sort(sibResults.begin(), sibResults.end(), [](const LR &a, const LR &b) -> bool {
+    //   return a.dLR > b.dLR;});
+    // std::sort(childResults.begin(), childResults.end(), [](const LR &a, const LR &b) -> bool {
+    //   return a.dLR > b.dLR;});
+    // 
+    // sibTopRankedID[prof1] = sibResults[0].nIDD + 1; //The +1's are to get rid of 0 based ranks
+    // sibTopRankedLR[prof1] = sibResults[0].dLR;
+    // 
+    // childTopRankedID[prof1] = childResults[0].nIDD + 1;
+    // childTopRankedLR[prof1] = childResults[0].dLR;
+    // 
+    // int i1 = 0;
+    // while(sibResults[i1].nIDD != prof1){
+    //   i1++;
+    // }
+    // 
+    // sibActualRank[prof1] = i1 + 1;
+    // sibActualLR[prof1] = sibResults[i1].dLR;
+    // 
+    // int i2 = 0;
+    // while(childResults[i2].nIDD != prof1){
+    //   i2++;
+    // }
+    // 
+    // childActualRank[prof1] = i2 + 1;
+    // childActualLR[prof1] = childResults[i2].dLR;
     
     ctr = ctr + 1;
   } 

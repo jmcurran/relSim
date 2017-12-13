@@ -11,3 +11,4 @@ Imports: Rcpp (>= 0.12.8), stats, graphics, xtable, multicool
 LinkingTo: Rcpp
 LazyData: true
 RoxygenNote: 6.0.1
+SystemRequirements: C++11

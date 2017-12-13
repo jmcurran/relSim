@@ -65,3 +65,7 @@ blockStats <- function(Prof1, Prof2, nProf, listFreqs, nCode) {
     .Call('_relSim_simNpersonMixture', PACKAGE = 'relSim', listFreqs, numContributors, numIterations)
 }
 
+famSearch <- function(profiles, siblings, children, listFreqs) {
+    .Call('_relSim_famSearch', PACKAGE = 'relSim', profiles, siblings, children, listFreqs)
+}
+

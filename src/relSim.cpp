@@ -771,4 +771,79 @@ NumericMatrix simNpersonMixture(List listFreqs, int numContributors, int numIter
   return results;
 }
 
+class LR{
+public:
+  double dLR;
+  int nIDRelative;
+  int nIDD;
+public:
+  LR(){};
+  LR(const double lr, const int idd, const int rel){
+    dLR = lr; 
+    nIDD = idd; 
+    nIDRelative = rel;
+  }
+};
+
+// [[Rcpp::export]]  
+List famSearch(IntegerVector& profiles, IntegerVector& siblings, IntegerVector& children, List& listFreqs){
+  
+  int nLoci = listFreqs.size();
+  int nProfiles = profiles.size() / (2 * nLoci);
+  
+  Rprintf("%d %d\n", nLoci, nProfiles);
+  
+  std::vector<LR> sibResults(nProfiles);
+  std::vector<LR> childResults(nProfiles);
+  
+  NumericVector sibTopRankedLR(nProfiles), sibTopRankedID(nProfiles), sibActualLR(nProfiles), sibActualRank(nProfiles);
+  NumericVector childTopRankedLR(nProfiles), childTopRankedID(nProfiles), childActualLR(nProfiles), childActualRank(nProfiles);
+  
+  
+  for(int prof1 = 0; prof1 < nProfiles; prof1++){
+    int nOffsetRel = 2 * nLoci * prof1;
+    IntegerVector::const_iterator iSib = siblings.begin() + nOffsetRel;
+    IntegerVector::const_iterator iChild = children.begin() + nOffsetRel;
+    
+    
+    for(int prof2 = 0; prof2 < nProfiles; prof2++){
+      int nOffset = 2 * nLoci * prof2;
+      IntegerVector::const_iterator iProf = profiles.begin() + nOffset;
+      
+      sibResults[prof2] = LR(lrSib(iProf, iSib, listFreqs), prof1, prof2);
+      childResults[prof2]= LR(lrPC(iProf, iChild, listFreqs), prof1, prof2);
+    }
+    
+    std::sort(sibResults.begin(), sibResults.end(), [](const LR &a, const LR &b) -> bool {
+      return a.dLR > b.dLR;});
+    std::sort(childResults.begin(), childResults.end(), [](const LR &a, const LR &b) -> bool {
+      return a.dLR > b.dLR;});
+    
+    sibTopRankedID[prof1] = childResults[0].nIDD;
+    sibTopRankedLR[prof1] = childResults[0].dLR;
+    
+    childTopRankedID[prof1] = childResults[0].nIDD;
+    childTopRankedLR[prof1] = childResults[0].dLR;
+    
+    int i1 = 0;
+    while(sibResults[i1].nIDD != prof1){
+      i1++;
+    }
+    
+    
+    
+    int i2 = 0;
+    while(childResults[i2].nIDD != prof1){
+      i2++;
+    }
+    
+    
+    
+    
+    
+    
+  } 
+  
+  return 1;
+}
 

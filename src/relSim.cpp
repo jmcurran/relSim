@@ -806,70 +806,74 @@ public:
 //' @author James Curran
 //' @export
 // [[Rcpp::export]]  
-List famSearch(IntegerVector& profiles, IntegerVector& siblings, IntegerVector& children, List& listFreqs){
+List famSearch(IntegerVector& profiles, IntegerVector& siblings, IntegerVector& children, List& listFreqs, int step){
   
   int nLoci = listFreqs.size();
   int nProfiles = profiles.size() / (2 * nLoci);
   
-  std::vector<LR> sibResults(nProfiles);
-  std::vector<LR> childResults(nProfiles);
+  //std::vector<LR> sibResults(nProfiles);
+  //std::vector<LR> childResults(nProfiles);
   
   NumericVector sibTopRankedLR(nProfiles), sibTopRankedID(nProfiles), sibActualLR(nProfiles), sibActualRank(nProfiles);
   NumericVector childTopRankedLR(nProfiles), childTopRankedID(nProfiles), childActualLR(nProfiles), childActualRank(nProfiles);
   
-  int onePct = (int)floor(nProfiles / 100);
-  int ctr = 1;
+  int ctr1, ctr2;
   
+  ctr1 = ctr2 = 0;
   
   for(int prof1 = 0; prof1 < nProfiles; prof1++){
-    
-    if(ctr % onePct == 0){
-      Rprintf("%d %%\n", ctr);
-    }
-    
     int nOffsetRel = 2 * nLoci * prof1;
     IntegerVector::const_iterator iSib = siblings.begin() + nOffsetRel;
     IntegerVector::const_iterator iChild = children.begin() + nOffsetRel;
-    
+
     double dSibLRMax, dChildLRMax;
     double dSibLR, dChildLR;
     int nSibRank, nChildRank;
     int nSibTopRankID, nChildTopRankID;
-    
-    dSibLRMax = dChildLRMax = -DBL_MAX;
-    nSibRank = nChildRank = 0;
-    nSibTopRankID = nChildTopRankID = 0;
-    
-    for(int prof2 = 0; prof2 < nProfiles; prof2++){
-        int nOffset = 2 * nLoci * prof2;
-        IntegerVector::const_iterator iProf = profiles.begin() + nOffset;
 
-        dSibLR = lrSib(iProf, iSib, listFreqs);
-        dChildLR = lrPC(iProf, iChild, listFreqs);
-        
-        if(dSibLR > dSibLRMax){
-          dSibLRMax = dSibLR;
-          nSibTopRankID = prof1 + 1;
-          nSibRank++;
-        }
-        
-        if(dChildLR > dChildLRMax){
-          dChildLRMax = dChildLR;
-          nChildTopRankID = prof1 + 1;
-          nChildRank++;
-        }
+    dSibLRMax = lrSib(profiles.begin() + (2 * nLoci * prof1), iSib, listFreqs);
+    dChildLRMax = lrPC(profiles.begin() + (2 * nLoci * prof1), iChild, listFreqs);
+    nSibRank = nChildRank = 0;
+    nSibTopRankID = nChildTopRankID = prof1;
+
+    for(int prof2 = 0; prof2 < nProfiles; prof2++){
+      int nOffset = 2 * nLoci * prof2;
+      IntegerVector::const_iterator iProf = profiles.begin() + nOffset;
+
+      dSibLR = lrSib(iProf, iSib, listFreqs);
+      dChildLR = lrPC(iProf, iChild, listFreqs);
+
+      if(dSibLR > dSibLRMax){
+        dSibLRMax = dSibLR;
+        nSibTopRankID = prof1 + 1;
+        nSibRank++;
+      }
+
+      if(dChildLR > dChildLRMax){
+        dChildLRMax = dChildLR;
+        nChildTopRankID = prof1 + 1;
+        nChildRank++;
+      }
     }
     
+    ctr2 = ctr2 + 1;
     
-    sibTopRankedID[prof1] = nSibTopRankID; 
-    sibTopRankedLR[prof1] = dSibLRMax;
-    sibActualLR[prof1] = nSibRank + 1;
-    sibActualLR[prof1] = dSibLR;
+    if(ctr2 == step){
+      ctr1 = ctr1 + 1;
+      Rprintf("%d\n", ctr1);
+      ctr2 = 0;
+    }
 
-    sibTopRankedID[prof1] = nSibTopRankID; 
+
+    sibTopRankedID[prof1] = nSibTopRankID;
     sibTopRankedLR[prof1] = dSibLRMax;
-    sibActualLR[prof1] = nSibRank + 1;
-    sibActualLR[prof1] = dSibLR;
+    sibActualRank[prof1] = nSibRank + 1;
+    sibActualLR[prof1] = lrSib(profiles.begin() + (2 * nLoci * prof1), iSib, listFreqs);
+
+    childTopRankedID[prof1] = nChildTopRankID;
+    childTopRankedLR[prof1] = dChildLRMax;
+    childActualRank[prof1] = nChildRank + 1;
+    childActualLR[prof1] = lrPC(profiles.begin() + (2 * nLoci * prof1), iChild, listFreqs);
     
     // for(int prof2 = 0; prof2 < nProfiles; prof2++){
     //   int nOffset = 2 * nLoci * prof2;
@@ -906,22 +910,22 @@ List famSearch(IntegerVector& profiles, IntegerVector& siblings, IntegerVector& 
     // childActualRank[prof1] = i2 + 1;
     // childActualLR[prof1] = childResults[i2].dLR;
     
-    ctr = ctr + 1;
+  //   ctr = ctr + 1;
   } 
   Rprintf("\n");
   
   List results;
-  
-  results["sibs"] = DataFrame::create(_["topRankedID"] = sibTopRankedID, 
+
+  results["sibs"] = DataFrame::create(_["topRankedID"] = sibTopRankedID,
                                            _["topRankedLR"] = sibTopRankedLR,
                                            _["actualRank"] = sibActualRank,
                                            _["actualLR"] = sibActualLR);
-  
-  results["children"] = DataFrame::create(_["topRankedID"] = childTopRankedID, 
+
+  results["children"] = DataFrame::create(_["topRankedID"] = childTopRankedID,
                                   _["topRankedLR"] = childTopRankedLR,
                                   _["actualRank"] = childActualRank,
                                   _["actualLR"] = childActualLR);
-  
-  return(results); 
+
+  return(results);
 }
 

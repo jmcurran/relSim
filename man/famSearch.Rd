@@ -4,7 +4,7 @@
 \alias{famSearch}
 \title{Search a database for siblings or children}
 \usage{
-famSearch(profiles, siblings, children, listFreqs)
+famSearch(profiles, siblings, children, listFreqs, step)
 }
 \arguments{
 \item{profiles}{an integer vector of stacked profiles representing the database. This vector has \eqn{2NL} entries, where N is the number of

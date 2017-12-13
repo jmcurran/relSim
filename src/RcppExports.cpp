@@ -226,8 +226,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // famSearch
-List famSearch(IntegerVector& profiles, IntegerVector& siblings, IntegerVector& children, List& listFreqs);
-RcppExport SEXP _relSim_famSearch(SEXP profilesSEXP, SEXP siblingsSEXP, SEXP childrenSEXP, SEXP listFreqsSEXP) {
+List famSearch(IntegerVector& profiles, IntegerVector& siblings, IntegerVector& children, List& listFreqs, int step);
+RcppExport SEXP _relSim_famSearch(SEXP profilesSEXP, SEXP siblingsSEXP, SEXP childrenSEXP, SEXP listFreqsSEXP, SEXP stepSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -235,7 +235,8 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< IntegerVector& >::type siblings(siblingsSEXP);
     Rcpp::traits::input_parameter< IntegerVector& >::type children(childrenSEXP);
     Rcpp::traits::input_parameter< List& >::type listFreqs(listFreqsSEXP);
-    rcpp_result_gen = Rcpp::wrap(famSearch(profiles, siblings, children, listFreqs));
+    Rcpp::traits::input_parameter< int >::type step(stepSEXP);
+    rcpp_result_gen = Rcpp::wrap(famSearch(profiles, siblings, children, listFreqs, step));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -257,7 +258,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_relSim_blockStatCounts", (DL_FUNC) &_relSim_blockStatCounts, 9},
     {"_relSim_blockStats", (DL_FUNC) &_relSim_blockStats, 5},
     {"_relSim_simNpersonMixture", (DL_FUNC) &_relSim_simNpersonMixture, 3},
-    {"_relSim_famSearch", (DL_FUNC) &_relSim_famSearch, 4},
+    {"_relSim_famSearch", (DL_FUNC) &_relSim_famSearch, 5},
     {NULL, NULL, 0}
 };
 

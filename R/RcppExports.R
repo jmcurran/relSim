@@ -85,7 +85,7 @@ blockStats <- function(Prof1, Prof2, nProf, listFreqs, nCode) {
 #' 
 #' @author James Curran
 #' @export
-famSearch <- function(profiles, siblings, children, listFreqs) {
-    .Call('_relSim_famSearch', PACKAGE = 'relSim', profiles, siblings, children, listFreqs)
+famSearch <- function(profiles, siblings, children, listFreqs, step) {
+    .Call('_relSim_famSearch', PACKAGE = 'relSim', profiles, siblings, children, listFreqs, step)
 }
 

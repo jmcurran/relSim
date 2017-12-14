@@ -37,7 +37,7 @@ readProfiles = function(fileName,
     idCol = prof[, id]
     prof = prof[, -id]
   }
-  numLoci = length(freqs)
+  numLoci = length(freqs$freqs)
   
   for (loc in 1:numLoci) {
     locus = freqs[["freqs"]][[loc]]

@@ -858,7 +858,7 @@ List famSearch(IntegerVector& profiles, IntegerVector& siblings, IntegerVector& 
     
     ctr2 = ctr2 + 1;
     
-    if(ctr2 == step){
+    if(step > 0 && ctr2 == step){
       ctr1 = ctr1 + 1;
       Rprintf("%d\n", ctr1);
       ctr2 = 0;

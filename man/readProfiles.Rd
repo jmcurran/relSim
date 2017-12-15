@@ -9,16 +9,18 @@ readProfiles(fileName, freqs, delim = "\\t", header = FALSE, id = 1)
 \arguments{
 \item{fileName}{a path to the profile file.}
 
+\item{freqs}{A list containing two lists labelled loci and freqs. The second
+list is a list of vectors containing the allele frequencies of each allele
+at each locus in the multiplex.}
+
 \item{delim}{a character that delimits the fields in the profile file.}
 
 \item{header}{a boolean witch is \code{TRUE} if the profile file has a column header line.}
 
-\item{Freqs}{A list containing two lists labelled loci and freqs. The second
-list is a list of vectors containing the allele frequencies of each allele
-at each locus in the multiplex.}
+\item{id}{a column number indicating which column the profile id's are stored. If \code{id == -1}, then this means there is no id information.}
 }
 \value{
-matrix of profiles.
+a \code{data.frame} of profiles where the alleles have been recoded to the allele index number, rather than the allele itself.
 }
 \description{
 Reads a set of profiles from a file

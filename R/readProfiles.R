@@ -6,12 +6,13 @@
 #' speeds up computation immensely when calculating any of the LRs or IBS.
 #'
 #' @param fileName a path to the profile file.
-#' @param Freqs A list containing two lists labelled loci and freqs. The second
+#' @param freqs A list containing two lists labelled loci and freqs. The second
 #' list is a list of vectors containing the allele frequencies of each allele
 #' at each locus in the multiplex.
 #' @param delim a character that delimits the fields in the profile file.
 #' @param header a boolean witch is \code{TRUE} if the profile file has a column header line.
-#' @return matrix of profiles.
+#' @param id a column number indicating which column the profile id's are stored. If \code{id == -1}, then this means there is no id information.
+#' @return a \code{data.frame} of profiles where the alleles have been recoded to the allele index number, rather than the allele itself.
 #' @author James M. Curran
 #' @examples
 #'

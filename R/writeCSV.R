@@ -14,6 +14,7 @@
 #' \code{TRUE} then an Amelogenin marker is added to the population, and all
 #' the profiles are set to male XY, although this is coded to 1,2 to keep the
 #' allele designations numeric.
+#' @param n the number of people in the database. This is arbitrarily set to 100 by default.
 #' @param delim The allele delimiter.
 #' @return a matrix which contains the table written to file.
 #' @note Rare alleles are recoded to 108.1. This is unlikely to do the right thing
@@ -29,7 +30,7 @@
 #'   writeCSV("USCaucs.csv", USCaucs)
 #' }
 #' 
-writeCSV = function(fileName, pop, n = 100,delim = ','){
+writeCSV = function(fileName, pop, n = 100, delim = ','){
   numLoci = length(pop$loci)
   Alleles = unique(unlist(lapply(pop$freqs, function(locus){
     as.numeric(names(locus))

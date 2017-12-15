@@ -18,6 +18,8 @@ with the allele names given by the named elements.
 the profiles are set to male XY, although this is coded to 1,2 to keep the
 allele designations numeric.}
 
+\item{n}{the number of people in the database. This is arbitrarily set to 100 by default.}
+
 \item{delim}{The allele delimiter.}
 }
 \value{

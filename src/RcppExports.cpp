@@ -20,12 +20,12 @@ BEGIN_RCPP
 END_RCPP
 }
 // calcFst
-NumericVector calcFst(IntegerVector Pop, IntegerVector SubPopIdx, int N, int ns, int nLoci, IntegerVector NumLocusAlleles);
+NumericVector calcFst(const IntegerVector& Pop, IntegerVector SubPopIdx, int N, int ns, int nLoci, IntegerVector NumLocusAlleles);
 RcppExport SEXP _relSim_calcFst(SEXP PopSEXP, SEXP SubPopIdxSEXP, SEXP NSEXP, SEXP nsSEXP, SEXP nLociSEXP, SEXP NumLocusAllelesSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< IntegerVector >::type Pop(PopSEXP);
+    Rcpp::traits::input_parameter< const IntegerVector& >::type Pop(PopSEXP);
     Rcpp::traits::input_parameter< IntegerVector >::type SubPopIdx(SubPopIdxSEXP);
     Rcpp::traits::input_parameter< int >::type N(NSEXP);
     Rcpp::traits::input_parameter< int >::type ns(nsSEXP);

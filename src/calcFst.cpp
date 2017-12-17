@@ -52,15 +52,16 @@ void calculateAlleleFrequencies(const IntegerVector& Pop, const IntegerVector &S
       nA1 = iProfile[i1] - 1; // Alleles assumed to be 1..nA
       nA2 = iProfile[i2] - 1;
       
-      AlleleFreqs[r][nLoc][nA1] += 1.0;
-      AlleleFreqs[r][nLoc][nA2] += 1.0;
       
-      if(nA1 == nA2)
-        Hom[r][nLoc][nA1] += 1.0;
-      
-    }
+       AlleleFreqs[r][nLoc][nA1] += 1.0;
+       AlleleFreqs[r][nLoc][nA2] += 1.0;
+     
+       if(nA1 == nA2)
+         Hom[r][nLoc][nA1] += 1.0;
+    
+
+    } 
   }
-  
   for(r = 0; r < ns; r++){
     // divide each allele count by 2*nSubPopSize[r]
     for(nLoc = 0; nLoc < nLoci; nLoc++){
@@ -160,7 +161,7 @@ NumericVector  calcTheta(int nLoci, int nSubPop, const IntegerVector& NumLocusAl
 }
 
 // [[Rcpp::export(".calcFst")]]
-NumericVector calcFst(IntegerVector Pop, IntegerVector SubPopIdx, int N, int ns,
+NumericVector calcFst(const IntegerVector& Pop, IntegerVector SubPopIdx, int N, int ns,
                int nLoci,
                IntegerVector NumLocusAlleles){
 
@@ -183,7 +184,7 @@ NumericVector calcFst(IntegerVector Pop, IntegerVector SubPopIdx, int N, int ns,
 	        Hom[r][nLoc].resize(nAlleles);
       }
     }
-
+    
     // calculate the allele frequencies
 
     calculateAlleleFrequencies(Pop, SubPopIdx,
@@ -191,10 +192,11 @@ NumericVector calcFst(IntegerVector Pop, IntegerVector SubPopIdx, int N, int ns,
                                NumLocusAlleles,
                		             AlleleFreqs,
                                Hom,
-                               SubPopSize);
+                               SubPopSize); 
 
     // calcFst
-
-    return(calcTheta(nLoci, ns, NumLocusAlleles, SubPopSize, AlleleFreqs, Hom));
+    // return calcTheta(nLoci, ns, NumLocusAlleles, SubPopSize, AlleleFreqs, Hom);
+    
+    return 0;
 
 }

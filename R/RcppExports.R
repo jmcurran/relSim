@@ -78,6 +78,7 @@ blockStats <- function(Prof1, Prof2, nProf, listFreqs, nCode) {
 #' profiles and L is the number of loci.
 #' @param listFreqs is a set of allele frequencies representing a particular multiplex. The function assumes that that loci in the profiles
 #' are in the same order as the loci in this list. The data structure is a \code{List} of \code{NumericVector}'s.
+#' @param step A step size for progress reporting, i.e. print out progress every \code{step} iterations. If \code{step = -1}, then there is no printing.
 #' 
 #' @return a \code{List} containing two dataframes, one called \code{sibs} and one called \code{children}. Each dataframe has results from searching for
 #' either the sibling or the child in the database. For each entry there is a record of which profile gave the highest LR (and its value),

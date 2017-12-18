@@ -43,8 +43,8 @@ randomProfilePairs = function(Freqs, BlockSize = 1){
 
     
 
-    prof1 = randomProfiles(Freqs$freqs, BlockSize)
-    prof2 = randomProfiles(Freqs$freqs, BlockSize)
+    prof1 = .randomProfiles(Freqs$freqs, BlockSize)
+    prof2 = .randomProfiles(Freqs$freqs, BlockSize)
     nLoci = length(Freqs$loci)
     Profile = vector(mode = "list", length = BlockSize)
     

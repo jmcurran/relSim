@@ -195,7 +195,7 @@ NumericVector calcFst(const IntegerVector& Pop, IntegerVector SubPopIdx, int N, 
                                SubPopSize); 
 
     // calcFst
-    // return calcTheta(nLoci, ns, NumLocusAlleles, SubPopSize, AlleleFreqs, Hom);
+    return calcTheta(nLoci, ns, NumLocusAlleles, SubPopSize, AlleleFreqs, Hom);
     
     return 0;
 

@@ -27,7 +27,7 @@ randomPCPairs = function(Freqs, BlockSize = 1){
     nLoci = length(Freqs$loci)
     Profile = vector(mode = "list", length = BlockSize)
 
-    Parent = randomProfiles(Freqs$freqs, BlockSize)
+    Parent = .randomProfiles(Freqs$freqs, BlockSize)
     Child = randomChildren(Parent, Freqs$freqs, BlockSize)
 
     for(b in 1:BlockSize){

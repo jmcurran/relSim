@@ -1,4 +1,3 @@
-#' @export
 testIS = function(nc = c(3, 2), locus = 1, seed = 123456){
   set.seed(seed)
   np = 2 * nc[2]

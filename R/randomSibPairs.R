@@ -50,7 +50,7 @@ randomSibPairs = function(Freqs, BlockSize = 1){
     nLoci = length(Freqs$loci)
     Profile = vector(mode = "list", length = BlockSize)
     
-    Sib1 = randomProfiles(Freqs$freqs, BlockSize);
+    Sib1 = .randomProfiles(Freqs$freqs, BlockSize);
     Sib2 = randomSibs(Sib1, Freqs$freqs, BlockSize);
 
     for(b in 1:BlockSize){

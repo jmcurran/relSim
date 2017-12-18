@@ -55,7 +55,7 @@ readProfiles = function(fileName,
       
       for(nloc in 1:numLoci){
         i1 = 2 * nloc - 1
-        i2 = i1 + 2
+        i2 = i1 + 1
         freqs$freqs[[nloc]] = table(c(prof[,i1], prof[,i2]))
         freqs$freqs[[nloc]] = freqs$freqs[[nloc]] / sum(freqs$freqs[[nloc]])
       }

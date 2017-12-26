@@ -1,6 +1,7 @@
 pkgname <- "relSim"
 source(file.path(R.home("share"), "R", "examples-header.R"))
 options(warn = 1)
+options(pager = "console")
 base::assign(".ExTimings", "relSim-Ex.timings", pos = 'CheckExEnv')
 base::cat("name\tuser\tsystem\telapsed\n", file=base::get(".ExTimings", pos = 'CheckExEnv'))
 base::assign(".format_ptime",

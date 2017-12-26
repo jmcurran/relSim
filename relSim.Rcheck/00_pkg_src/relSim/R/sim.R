@@ -46,7 +46,8 @@
 #' sim(N, fbiCaucs, 'FS', save = T)
 #' sim(N, fbiCaucs, 'PC', save = T)
 #' }
-#' 
+#'
+#' @importFrom utils setTxtProgressBar 
 #' @export sim
 sim = function(N, Freqs, rel = "UN", save = FALSE, strPath = "",
                strVer = "", BlockSize = N/100, fileName = NULL){

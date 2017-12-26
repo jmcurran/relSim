@@ -30,6 +30,7 @@
 #' P1
 #' C1
 #' 
+#' @importFrom stats runif
 #' @export randomChild
 randomChild = function(profile, Freqs){
     nLoci = length(Freqs$loci)

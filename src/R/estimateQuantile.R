@@ -1,3 +1,5 @@
+#' @importFrom stats quantile
+#' @importFrom utils txtProgressBar setTxtProgressBar
 estimateQuantile = function(p, Freqs, n, N, rel = "UN", w = 3,
                             BlockSize = N/10, resFile = NULL, ...){
   rel = toupper(rel)

@@ -1,8 +1,8 @@
 Package: relSim
 Type: Package
 Title: Relative Simulator
-Version: 0.2-7
-Date: 2017-12-19
+Version: 0.2-8
+Date: 2017-12-27
 Author: James M. Curran
 Maintainer: James M. Curran <j.curran@auckland.ac.nz>
 Description: A set of tools to explore the behaviour statistics used for forensic DNA interpretation when close relatives are involved. The package also offers some useful tools for exploring other forensic DNA situations.
@@ -13,4 +13,4 @@ LazyData: true
 RoxygenNote: 6.0.1
 SystemRequirements: C++11
 NeedsCompilation: yes
-Packaged: 2017-12-26 01:52:39 UTC; jcur002
+Packaged: 2017-12-26 23:48:44 UTC; jcur002

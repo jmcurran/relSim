@@ -1,3 +1,4 @@
+#' @importFrom graphics barplot boxplot box
 plot.npmresult = function(x, bylocus = FALSE, ...){
     if(bylocus){
       Loci = rownames(x$raw)

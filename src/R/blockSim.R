@@ -67,7 +67,7 @@
 #' blockSim(N, fbiCaucs, rel = "UN", ibsthresh = ibs, kithresh = ki,
 #'          code = code, falseNeg = FALSE, BlockSize = BlockSize)
 #' }
-#' @importFrom utils txtProgressBar
+#' @importFrom utils txtProgressBar setTxtProgressBar
 blockSim = function(N, Freqs, rel = "UN", ibsthresh = NULL, kithresh = NULL,
                     code = 1, falseNeg = TRUE, BlockSize = N/10, showProgress = FALSE){
   

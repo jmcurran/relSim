@@ -22,8 +22,9 @@
 #' from the profiles. Given that the profiles generally do not have any locus name information
 #' the loci will just be labelled Locus1, Locus2, \ldots. If there are missing values then the raw missing profiles are returned
 #' @author James M. Curran
-#' @examples
 #'
+#' @importFrom utils read.table
+#' @importFrom stats complete.cases
 #' @export readProfiles
 readProfiles = function(fileName,
                         freqs = NULL,
@@ -33,7 +34,7 @@ readProfiles = function(fileName,
                         discardMissing = TRUE) {
   if (header) {
     rawProfiles = read.table(fileName,
-                      sep = delim,
+                      sep = sep,
                       header = FALSE,
                       skip = 1)
   } else{
@@ -54,7 +55,7 @@ readProfiles = function(fileName,
     cat("No frequency file supplied so compiling from raw profiles\n")
     
     if(ncol(rawProfiles) %% 2 != 0){
-      Stop("The profile file must contain an even number of columns excluding the id column\n")
+      stop("The profile file must contain an even number of columns excluding the id column\n")
     }else{
       numLoci = ncol(rawProfiles) / 2
       

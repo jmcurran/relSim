@@ -7,7 +7,7 @@
 #' @title Relative Simulator
 #'
 #' @author James Curran
-#' @useDynLib relSim
+#' @useDynLib relSim, .registration = TRUE
 NULL
 
 

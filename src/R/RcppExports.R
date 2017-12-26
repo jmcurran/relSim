@@ -2,67 +2,67 @@
 # Generator token: 10BE3573-1514-4C36-9D1C-5A225CD40393
 
 .breed <- function(Parents, ns, Ns, nLoci) {
-    .Call('_relSim_breed', PACKAGE = 'relSim', Parents, ns, Ns, nLoci)
+    .Call(`_relSim_breed`, Parents, ns, Ns, nLoci)
 }
 
 .calcFst <- function(Pop, SubPopIdx, N, ns, nLoci, NumLocusAlleles) {
-    .Call('_relSim_calcFst', PACKAGE = 'relSim', Pop, SubPopIdx, N, ns, nLoci, NumLocusAlleles)
+    .Call(`_relSim_calcFst`, Pop, SubPopIdx, N, ns, nLoci, NumLocusAlleles)
 }
 
 .IS <- function(freqs, N, numContributors, maxAllelesShowing, Perms, bTail = FALSE) {
-    .Call('_relSim_IS', PACKAGE = 'relSim', freqs, N, numContributors, maxAllelesShowing, Perms, bTail)
+    .Call(`_relSim_IS`, freqs, N, numContributors, maxAllelesShowing, Perms, bTail)
 }
 
 .locusLRmix <- function(ProfVic, ProfSus, Freq) {
-    .Call('_relSim_locusLRmix_Caller', PACKAGE = 'relSim', ProfVic, ProfSus, Freq)
+    .Call(`_relSim_locusLRmix_Caller`, ProfVic, ProfSus, Freq)
 }
 
 .LRmix <- function(ProfVic, ProfSus, listFreqs) {
-    .Call('_relSim_LRmix', PACKAGE = 'relSim', ProfVic, ProfSus, listFreqs)
+    .Call(`_relSim_LRmix`, ProfVic, ProfSus, listFreqs)
 }
 
 .locusIBS <- function(ProfMat, N) {
-    .Call('_relSim_locusIBS', PACKAGE = 'relSim', ProfMat, N)
+    .Call(`_relSim_locusIBS`, ProfMat, N)
 }
 
 .IBS_Caller <- function(Prof1, Prof2, nLoci) {
-    .Call('_relSim_IBS_Caller', PACKAGE = 'relSim', Prof1, Prof2, nLoci)
+    .Call(`_relSim_IBS_Caller`, Prof1, Prof2, nLoci)
 }
 
 .randomProfiles <- function(listFreqs, nBlockSize = 1000L) {
-    .Call('_relSim_randomProfiles', PACKAGE = 'relSim', listFreqs, nBlockSize)
+    .Call(`_relSim_randomProfiles`, listFreqs, nBlockSize)
 }
 
 randomSibs <- function(ProfSib1, listFreqs, nBlockSize) {
-    .Call('_relSim_randomSibs', PACKAGE = 'relSim', ProfSib1, listFreqs, nBlockSize)
+    .Call(`_relSim_randomSibs`, ProfSib1, listFreqs, nBlockSize)
 }
 
 randomChildren <- function(ProfParent, listFreqs, nBlockSize) {
-    .Call('_relSim_randomChildren', PACKAGE = 'relSim', ProfParent, listFreqs, nBlockSize)
+    .Call(`_relSim_randomChildren`, ProfParent, listFreqs, nBlockSize)
 }
 
 .lrPC <- function(ProfParent, ProfChild, listFreqs) {
-    .Call('_relSim_lrPC_Caller', PACKAGE = 'relSim', ProfParent, ProfChild, listFreqs)
+    .Call(`_relSim_lrPC_Caller`, ProfParent, ProfChild, listFreqs)
 }
 
 maximizeLRPC <- function(listFreqs, nBlockSize) {
-    .Call('_relSim_maximizeLRPC', PACKAGE = 'relSim', listFreqs, nBlockSize)
+    .Call(`_relSim_maximizeLRPC`, listFreqs, nBlockSize)
 }
 
 .lrSib <- function(ProfSib1, ProfSib2, listFreqs) {
-    .Call('_relSim_lrSib_Caller', PACKAGE = 'relSim', ProfSib1, ProfSib2, listFreqs)
+    .Call(`_relSim_lrSib_Caller`, ProfSib1, ProfSib2, listFreqs)
 }
 
 blockStatCounts <- function(Prof1, Prof2, nProf, listFreqs, nCode, bFalseNeg, IBSthresh, LRthresh, nNumResults) {
-    .Call('_relSim_blockStatCounts', PACKAGE = 'relSim', Prof1, Prof2, nProf, listFreqs, nCode, bFalseNeg, IBSthresh, LRthresh, nNumResults)
+    .Call(`_relSim_blockStatCounts`, Prof1, Prof2, nProf, listFreqs, nCode, bFalseNeg, IBSthresh, LRthresh, nNumResults)
 }
 
 blockStats <- function(Prof1, Prof2, nProf, listFreqs, nCode) {
-    .Call('_relSim_blockStats', PACKAGE = 'relSim', Prof1, Prof2, nProf, listFreqs, nCode)
+    .Call(`_relSim_blockStats`, Prof1, Prof2, nProf, listFreqs, nCode)
 }
 
 .simNpersonMixture <- function(listFreqs, numContributors, numIterations) {
-    .Call('_relSim_simNpersonMixture', PACKAGE = 'relSim', listFreqs, numContributors, numIterations)
+    .Call(`_relSim_simNpersonMixture`, listFreqs, numContributors, numIterations)
 }
 
 #' Search a database for siblings or children
@@ -87,6 +87,6 @@ blockStats <- function(Prof1, Prof2, nProf, listFreqs, nCode) {
 #' @author James Curran
 #' @export
 famSearch <- function(profiles, siblings, children, listFreqs, step) {
-    .Call('_relSim_famSearch', PACKAGE = 'relSim', profiles, siblings, children, listFreqs, step)
+    .Call(`_relSim_famSearch`, profiles, siblings, children, listFreqs, step)
 }
 

@@ -492,7 +492,7 @@ NumericVector p2(List freqs, int numContributors){
   return probs;
 }
 
-// [[Rcpp::export(".IS")]]  
+// [[Rcpp::export(".IS")]]
 List IS(List freqs,int N, int numContributors, int maxAllelesShowing, List Perms, bool bTail = false){
   
   if(maxAllelesShowing == 1){

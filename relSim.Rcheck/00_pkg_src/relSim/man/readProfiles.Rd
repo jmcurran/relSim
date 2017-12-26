@@ -39,9 +39,6 @@ Reads a set of profiles from a file
 The alleles are recorded integers rather than the STR repeat numbers. This
 speeds up computation immensely when calculating any of the LRs or IBS.
 }
-\examples{
-
-}
 \author{
 James M. Curran
 }

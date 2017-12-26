@@ -1,3 +1,5 @@
+#' @importFrom utils getFromNamespace
+#' @importFrom xtable xtable
 xtable.npmresult = function(x, caption = NULL, label = NULL, align = NULL, digits = NULL, 
                             display = NULL, bylocus = FALSE, ...){
     if(bylocus){
@@ -14,8 +16,11 @@ xtable.npmresult = function(x, caption = NULL, label = NULL, align = NULL, digit
       
       tbl = rbind(tbl, signif(x$summary, digits))
       
-      rownames(tbl) = c(Loci, "Product")    
-      return(xtable.data.frame(data.frame(tbl, check.names = FALSE), 
+      rownames(tbl) = c(Loci, "Product")  
+      
+      xtdf = getFromNamespace("xtable.data.frame", "xtable")
+      
+      return(xtdf(data.frame(tbl, check.names = FALSE), 
                                caption = caption, label = label, align = align, digits = digits, 
                                display = display, ...))
     }else{  

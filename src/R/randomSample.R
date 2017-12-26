@@ -22,6 +22,7 @@
 #' data(fbiCaucs)
 #' G = randomSample(1, fbiCaucs, "FS", 100)
 #' 
+#' @importFrom stats runif
 #' @export randomSample
 randomSample = function(nLoc, Freqs, rel = "UN", N = 10000){
     rel = toupper(rel)

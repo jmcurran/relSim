@@ -23,6 +23,7 @@
 #' this function.
 #' @author James M. Curran
 #' @seealso breedFst USCaucs
+#' @importFrom utils write.csv
 #' @examples
 #' 
 #' data(USCaucs)

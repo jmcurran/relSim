@@ -37,6 +37,7 @@
 #' data(USCaucs)
 #' pop = breedFst(USCaucs)
 #' 
+#' @importFrom utils txtProgressBar setTxtProgressBar
 #' @export breedFst
 breedFst = function(Freqs, theta = 0.01, N = 10000, ns = 10,
                     DNAtools = FALSE){

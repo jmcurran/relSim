@@ -1,5 +1,4 @@
 #' @importFrom multicool initMC allPerm
-#' @export
 IS = function(freqs, numContributors = 4, maxPeaks = NULL, numIterations = 100, bTail = FALSE){
   if(numContributors[1] < 2){
     stop("numContributors must be >= 2")

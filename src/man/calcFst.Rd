@@ -23,7 +23,7 @@ population
 }
 \description{
 This procedure uses the method of Weir and Cockerham to estimate
-\eqn{theta}{\theta} (\eqn{Fst}{F_{ST}}) for a population with substructure
+\eqn{\theta}{theta} (\eqn{F_{ST}}{Fst}) for a population with substructure
 }
 \examples{
 

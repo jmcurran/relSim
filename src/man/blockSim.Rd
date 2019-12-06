@@ -5,7 +5,8 @@
 \title{Perform relatives simulations using large memory blocks in C}
 \usage{
 blockSim(N, Freqs, rel = "UN", ibsthresh = NULL, kithresh = NULL,
-  code = 1, falseNeg = TRUE, BlockSize = N/10, showProgress = FALSE)
+  code = 1, falseNeg = TRUE, BlockSize = N/10,
+  showProgress = FALSE)
 }
 \arguments{
 \item{N}{The number of iterations to carry out}

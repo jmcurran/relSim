@@ -14,6 +14,7 @@
 #' the profiles are set to male XY, although this is coded to 1,2 to keep the
 #' allele designations numeric.
 #' @param delim The allele delimiter.
+#' @param dupLoci If \code{TRUE} the locus names are written twice in the header, otherwise just once.
 #' @note Rare alleles are recoded to 108.1.
 #' @author James M. Curran
 #' @seealso breedFst
@@ -24,8 +25,8 @@
 #' \dontrun{
 #'   writePop("USCaucs.csv", pop)
 #'   }
-#' 
-writePop = function(fileName,  pop, addAmelo = FALSE, delim = ','){
+#' @export
+writePop = function(fileName,  pop, addAmelo = FALSE, delim = ',', dupLoci = TRUE){
   nLoci = pop$nLoci
   Alleles = lapply(pop$Freqs$freqs, names)
   Alleles = lapply(Alleles, function(x){x[grep("R", x)] = "108.1"; x})

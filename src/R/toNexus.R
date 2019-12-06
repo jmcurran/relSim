@@ -14,12 +14,15 @@
 #' (4): 590--621.
 #' 
 #' Zaykin, D. and Lewis, P., GDA - software to accompany Genetic Data Analysis
-#' II, \url{http://phylogeny.uconn.edu/software/}.
+#' II, <http://phylogeny.uconn.edu/software/>.
 #' @examples
 #' 
+#' ## Don't run
+#' \dontrun{
 #' data(USCaucs)
 #' p = breedFst(USCaucs)
 #' toNexus(p)
+#' }
 #' 
 #' @export toNexus
 toNexus = function(Pop, fileName = 'output.nex'){

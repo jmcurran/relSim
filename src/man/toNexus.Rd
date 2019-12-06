@@ -18,9 +18,12 @@ so that GDA can be used to check the Fst calculations
 }
 \examples{
 
+## Don't run
+\dontrun{
 data(USCaucs)
 p = breedFst(USCaucs)
 toNexus(p)
+}
 
 }
 \references{
@@ -29,7 +32,7 @@ extensible file format for systematic information, Systematic Biology 46
 (4): 590--621.
 
 Zaykin, D. and Lewis, P., GDA - software to accompany Genetic Data Analysis
-II, \url{http://phylogeny.uconn.edu/software/}.
+II, <http://phylogeny.uconn.edu/software/>.
 }
 \seealso{
 breedFst

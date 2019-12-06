@@ -14,8 +14,7 @@
 #' 
 #' @param Freqs A list with an element, \code{freqs} which contains a list of
 #' vectors, where each vector is a set of allele frequencies for a locus
-#' @param theta A desired level of inbreeding, where \eqn{0 < \theta < }{0 <
-#' theta < 0.5}\eqn{ 0.5}{0 < theta < 0.5}
+#' @param theta A desired level of inbreeding, where \eqn{0 < \theta < 0.5}{0 < theta < 0.5}
 #' @param N Total population size
 #' @param ns The number of subpopulations. \eqn{N/n_s}{N/ns} needs to be
 #' greater than 100

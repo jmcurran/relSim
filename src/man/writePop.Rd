@@ -4,7 +4,8 @@
 \alias{writePop}
 \title{Saves/writes population profiles to disk}
 \usage{
-writePop(fileName, pop, addAmelo = FALSE, delim = ",")
+writePop(fileName, pop, addAmelo = FALSE, delim = ",",
+  dupLoci = TRUE)
 }
 \arguments{
 \item{fileName}{the name and path where the population profiles are to be
@@ -19,6 +20,8 @@ the profiles are set to male XY, although this is coded to 1,2 to keep the
 allele designations numeric.}
 
 \item{delim}{The allele delimiter.}
+
+\item{dupLoci}{If \code{TRUE} the locus names are written twice in the header, otherwise just once.}
 }
 \description{
 Writes a population of profiles to disk using the original allele
@@ -35,7 +38,6 @@ pop = breedFst(USCaucs)
 \dontrun{
   writePop("USCaucs.csv", pop)
   }
-
 }
 \seealso{
 breedFst

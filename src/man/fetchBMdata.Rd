@@ -4,14 +4,28 @@
 \alias{fetchBMdata}
 \title{Retrieve data from Budowle and Moretti (1999) from the web}
 \usage{
-fetchBMdata()
+fetchBMdata(url = NULL, id = NULL)
+}
+\arguments{
+\item{url}{- the location of the webpage this data is stored on. If
+\code{NULL} then hardcoded values in the function are used. The argument
+allows the user to get the function to work given this values may change.
+However, it is unlikely that it will help.}
+
+\item{id}{- the id of the HTML element where the data is stored on the
+webpage. If \code{NULL} then a hardcoded value in the function is used. The
+argument allows the user to get the function to work given this values may
+change. However, it is unlikely that it will help. NOTE: this is super
+flakey because of how the FBI web authors have created it. This may change
+in which case, the function will more likely change than the id.}
 }
 \value{
 A list consisting of six elements corresponding to the six
 populations detailed in the data set. Each of the list elements is a list in
-itself with two further elements named loci and freqs. loci is a vector of
-the 13-20 STR locus names. freqs is a list of 13-20 vectors, each vector
-contains the allele frequencies.
+itself with three further elements named \code{loci}, \code{profiles} and \code{freqs}. 
+\code{loci} is a vector of the 13-20 STR locus names. \code{freqs} is a list of 13-20 
+vectors, each vector contains the allele frequencies. \code{profiles} contains the 
+raw profiles that the allele frequency tables were constructed from.
 }
 \description{
 Retreives the Budowle and Moretti (1999) and compiles the allele frequency

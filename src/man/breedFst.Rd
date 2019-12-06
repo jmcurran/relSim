@@ -11,8 +11,7 @@ breedFst(Freqs, theta = 0.01, N = 10000, ns = 10, DNAtools = FALSE)
 \item{Freqs}{A list with an element, \code{freqs} which contains a list of
 vectors, where each vector is a set of allele frequencies for a locus}
 
-\item{theta}{A desired level of inbreeding, where \eqn{0 < \theta < }{0 <
-theta < 0.5}\eqn{ 0.5}{0 < theta < 0.5}}
+\item{theta}{A desired level of inbreeding, where \eqn{0 < \theta < 0.5}{0 < theta < 0.5}}
 
 \item{N}{Total population size}
 

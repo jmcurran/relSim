@@ -1,7 +1,7 @@
-#' Caculate locus-wise and population \eqn{F_{ST}}{Fst} values
+#' Calculate locus-wise and population \eqn{\theta = F_{ST}}{theta = F_ST},  \eqn{F = F_{IT}}{F = F_IT}, and \eqn{f = F_{IS}}{f = F_IS} values
 #' 
 #' This procedure uses the method of Weir and Cockerham to estimate
-#' \eqn{theta}{\theta} (\eqn{Fst}{F_{ST}}) for a population with substructure
+#' \eqn{\theta = F_{ST}}{theta = F_ST},  \eqn{F = F_{IT}}{F = F_IT}, and \eqn{f = F_{IS}}{f = F_IS} for a population with known substructure
 #' 
 #' 
 #' @param Pop An object type 'population'
@@ -21,12 +21,13 @@
 #' @examples
 #' 
 #' data(USCaucs)
+#' set.seed(123)
 #' p = breedFst(USCaucs)
-#' fst = calcFst(p)
-#' fst
+#' fstats = calcFStats(p)
+#' fstats
 #' 
-#' @export calcFst
-calcFst = function(Pop, subPopIdx = NULL){
+#' @export calcFStats
+calcFStats = function(Pop, subPopIdx = NULL){
     if(class(Pop) != "population")
         stop("Pop must be of class Population")
 
@@ -59,14 +60,16 @@ calcFst = function(Pop, subPopIdx = NULL){
         ns = length(unique(subPopIdx))
     }
 
-    Fst = .calcFst(Pop = Pop$profiles,
+    FStats = .calcFStatistics(Pop = Pop$profiles,
                    SubPopIdx = subPopIdx,
                    N = N, 
                    ns = ns,
                    nLoci = nLoci,
                    NumLocusAlleles = NumLocusAlleles)
+    
+    FStats = do.call(rbind, FStats)
 
-    names(Fst)[1:nLoci] = Pop$Freqs$loci
-    names(Fst)[nLoci + 1] = "Overall"
-    return(Fst)
+    rownames(FStats) = c(Pop$Freqs$loci, "Overall")
+    return(FStats)
 }
+

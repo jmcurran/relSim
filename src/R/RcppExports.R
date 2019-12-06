@@ -9,6 +9,10 @@
     .Call(`_relSim_calcFst`, Pop, SubPopIdx, N, ns, nLoci, NumLocusAlleles)
 }
 
+.calcFStatistics <- function(Pop, SubPopIdx, N, ns, nLoci, NumLocusAlleles) {
+    .Call(`_relSim_calcFStatistics`, Pop, SubPopIdx, N, ns, nLoci, NumLocusAlleles)
+}
+
 .IS <- function(freqs, N, numContributors, maxAllelesShowing, Perms, bTail = FALSE) {
     .Call(`_relSim_IS`, freqs, N, numContributors, maxAllelesShowing, Perms, bTail)
 }

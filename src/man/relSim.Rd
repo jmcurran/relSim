@@ -3,7 +3,6 @@
 \docType{package}
 \name{relSim}
 \alias{relSim}
-\alias{relSim-package}
 \title{Relative Simulator}
 \description{
 relSim

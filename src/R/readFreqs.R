@@ -51,12 +51,19 @@ readFreqs = function(strPath, FSIGenFormat = TRUE, delim = ','){
         if(isOpen(f1)){
             Lines = readLines(f1)
             close(f1)
+            
+            stripBlankLines = function(Lines){
+                allDelim = paste0("^[", delim, "]*$")
+                Lines = Lines[!grepl(allDelim, Lines)]
+            }
+            
+            Lines = strBlankLines(Lines)
 
             alleleStart = -1
 
             ## look for a line starting with alleles
 
-            if(!any(grepl('^[Aa]llele', Lines))){
+            if(!any(grepl('^[^,]*[Aa]llele[^,]*,', Lines))){
                 stop("The header line should start with 'Allele'")
             }else{
                 alleleStart = grep('^[Aa]llele', Lines)

@@ -521,6 +521,7 @@ List IS(List freqs,int N, int numContributors, int maxAllelesShowing, List Perms
   List results;
   NumericMatrix denoms(N, numLoci);
   NumericMatrix numers(N, numLoci);
+  NumericMatrix ratio(N, numLoci);
     
   
   if(bTail){
@@ -544,6 +545,7 @@ List IS(List freqs,int N, int numContributors, int maxAllelesShowing, List Perms
       //p.print();
       numers(i,_) = p.prob();
       denoms(i,_) = p.ISprob(perms, true);
+      ratio(i,_) = exp(numers(i,_) - denoms(i,_));
     }
     
     // store the number of peaks -- for debugging mostly.
@@ -558,11 +560,15 @@ List IS(List freqs,int N, int numContributors, int maxAllelesShowing, List Perms
       Profile p = g.randProf(numContributors, numAllelesShowing);
       numers(i,_) = p.prob();
       denoms(i,_) = p.ISprob(perms, false);
+      ratio(i,_) = exp(numers(i,_) - denoms(i,_));
     }
   }
   
   results["numerator"] = numers;
   results["denominator"] = denoms;
+  results["lr"] = ratio;
+  results["est"] = colMeans(ratio);
+//results["est"] = mean(exp(numers - denoms));
   return results;
 
   

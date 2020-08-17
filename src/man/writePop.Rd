@@ -4,8 +4,7 @@
 \alias{writePop}
 \title{Saves/writes population profiles to disk}
 \usage{
-writePop(fileName, pop, addAmelo = FALSE, delim = ",",
-  dupLoci = TRUE)
+writePop(fileName, pop, addAmelo = FALSE, delim = ",", dupLoci = TRUE)
 }
 \arguments{
 \item{fileName}{the name and path where the population profiles are to be

@@ -4,8 +4,7 @@
 \alias{lrSib}
 \title{Likelihood Ratio / Kinship Index for full-siblings}
 \usage{
-lrSib(sib1, sib2, Freqs = NULL, nLoci = length(sib1)/2, f = NULL,
-  n = NULL)
+lrSib(sib1, sib2, Freqs = NULL, nLoci = length(sib1)/2, f = NULL, n = NULL)
 }
 \arguments{
 \item{sib1}{A matrix consisting of 2 columns and nLoci rows. Each entry in

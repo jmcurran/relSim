@@ -4,8 +4,16 @@
 \alias{sim}
 \title{Perform the relatives simulation}
 \usage{
-sim(N, Freqs, rel = "UN", save = FALSE, strPath = "", strVer = "",
-  BlockSize = N/100, fileName = NULL)
+sim(
+  N,
+  Freqs,
+  rel = "UN",
+  save = FALSE,
+  strPath = "",
+  strVer = "",
+  BlockSize = N/100,
+  fileName = NULL
+)
 }
 \arguments{
 \item{N}{The number of iterations to carry out}

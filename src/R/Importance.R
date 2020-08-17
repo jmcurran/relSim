@@ -1,5 +1,24 @@
+#' Use importance sampling to determine the probability of m peaks from n contributors to a mixture
+#' 
+#' @param freqs a set of allele frequencies. The format can be found in \code{\link{readFreqs}}
+#' @param numContributors the number of contributors to each mixture. Must be >= 1.
+#' @param  maxPeaks either the number of peaks observed in the mixture or . such that 1 <=1 maxPeaks <= min(2 * numContribuors, numAlleles). That is, if used
+#' in this way maxPeaks must be between 1 and the smaller of twice the number of contributors or the number of possible alleles because you cannot 
+#' see more peaks than there are possible alleles.
+#' @param numIterations the number of iterations to use in the importance sampling scheme.
 #' @importFrom multicool initMC allPerm
-IS = function(freqs, numContributors = 4, maxPeaks = NULL, numIterations = 100, bTail = FALSE){
+#' 
+#' @return a list with as many elements as loci. If tail probabilities are selected then each locus element will be a vector of probabilities
+#' 
+#' @example 
+#' \dontrun{
+#' data(USCaucs)
+#' 
+#' IS(USCaucs, numContributors = 4, maxPeaks = 3, numIterations = 1e4)
+#' }
+#'
+#' @export
+IS = function(Freqs, numContributors = 4, maxPeaks = NULL, numIterations = 100, bTail = FALSE){
   if(numContributors[1] < 2){
     stop("numContributors must be >= 2")
   }
@@ -36,7 +55,7 @@ IS = function(freqs, numContributors = 4, maxPeaks = NULL, numIterations = 100, 
       }
     }
     
-    r = .IS(freqs, numIterations, numContributors[1], maxPeaks, perms, TRUE)
+    r = .IS(Freqs$freqs, numIterations, numContributors[1], maxPeaks, perms, TRUE)
     ## This correction implies the probabilities under the target density
     ## are too small by a factor of maxPeaks = 2 * apparent contribs
     ## but not sure why - this should not affect the target probabilities
@@ -55,7 +74,10 @@ IS = function(freqs, numContributors = 4, maxPeaks = NULL, numIterations = 100, 
     }else{
       perms = list(matrix(1, 1, 1))
     }
-    r = .IS(freqs, numIterations, numContributors, maxPeaks, perms)
+    r = .IS(Freqs$freqs, numIterations, numContributors, maxPeaks, perms)
+    names(r$est) = names(Freqs$freqs)
+    
+    return(r$est)
   }
   # perms = vector(length = maxPeaks, mode = "list")
   # for(np in 1:maxPeaks)

@@ -4,8 +4,14 @@
 \alias{readProfiles}
 \title{Read a set of profiles from a file}
 \usage{
-readProfiles(fileName, freqs = NULL, sep = "\\t", header = FALSE,
-  id = 1, discardMissing = TRUE)
+readProfiles(
+  fileName,
+  freqs = NULL,
+  sep = "\\t",
+  header = FALSE,
+  id = 1,
+  discardMissing = TRUE
+)
 }
 \arguments{
 \item{fileName}{a path to the profile file.}

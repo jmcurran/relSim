@@ -4,10 +4,12 @@
 \name{fbiCaucs}
 \alias{fbiCaucs}
 \title{CODIS STR Loci allele frequency data}
-\format{This data set is a list which has two sub-lists. The lists are named
+\format{
+This data set is a list which has two sub-lists. The lists are named
 loci and freqs. loci is a vector of the 13 CODIS STR locus names. freqs is a
 list of 13 vectors, each vector contains the allele frequencies published
-for US Caucasians in Budowle et al. (2001).}
+for US Caucasians in Budowle et al. (2001).
+}
 \description{
 This data structure
 }

@@ -4,8 +4,14 @@
 \alias{readResults}
 \title{Read a simulation result set from file}
 \usage{
-readResults(N = 0, rel = "UN", gzip = TRUE, strPath = "",
-  strVer = "", fileName = NULL)
+readResults(
+  N = 0,
+  rel = "UN",
+  gzip = TRUE,
+  strPath = "",
+  strVer = "",
+  fileName = NULL
+)
 }
 \arguments{
 \item{N}{The number of iterations in the simulation}

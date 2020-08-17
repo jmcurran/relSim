@@ -5,9 +5,15 @@
 \title{Returns the false positive or false negative rates for a set of IBS and/or
 KI thresholds}
 \usage{
-errorRate(simResults, bIBS = TRUE, bKI = FALSE, rel = "UN",
-  IBSthresh = 14:17, KIthresh = c(1000, 10000, 1e+05, 1e+06),
-  nLoci = 13)
+errorRate(
+  simResults,
+  bIBS = TRUE,
+  bKI = FALSE,
+  rel = "UN",
+  IBSthresh = 14:17,
+  KIthresh = c(1000, 10000, 1e+05, 1e+06),
+  nLoci = 13
+)
 }
 \arguments{
 \item{simResults}{A data.frame with three columns labelled sib, pc and ibs.

@@ -4,8 +4,7 @@
 \alias{lrPC}
 \title{Likelihood Ratio for Parent-Child / Paternity Index}
 \usage{
-lrPC(parent, child, Freqs = NULL, nLoci = length(parent)/2, f = NULL,
-  n = NULL)
+lrPC(parent, child, Freqs = NULL, nLoci = length(parent)/2, f = NULL, n = NULL)
 }
 \arguments{
 \item{parent}{A matrix consisting of 2 columns and nLoci rows. Each entry in

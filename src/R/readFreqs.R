@@ -46,7 +46,7 @@ readFreqs = function(strPath, FSIGenFormat = TRUE, delim = ','){
 
     if(FSIGenFormat){
         ## expect the information to start with Alleles, and end with n
-        f1 = file(strPath, 'r')
+        f1 = file(strPath, open = 'r', encoding = 'UTF-8-BOM')
 
         if(isOpen(f1)){
             Lines = readLines(f1)
@@ -57,7 +57,7 @@ readFreqs = function(strPath, FSIGenFormat = TRUE, delim = ','){
                 Lines = Lines[!grepl(allDelim, Lines)]
             }
             
-            Lines = strBlankLines(Lines)
+            Lines = stripBlankLines(Lines)
 
             alleleStart = -1
 
@@ -76,10 +76,10 @@ readFreqs = function(strPath, FSIGenFormat = TRUE, delim = ','){
             ## look for line starting with n
             countStart = -1
 
-            if(!any(grepl('^[Nn]', Lines))){
+            if(!any(grepl('^([Nn]|total)', Lines))){
                 stop("The frequency file should have locus allele counts")
             }else{
-                countStart = grep('^[Nn]', Lines)
+                countStart = grep('^([Nn]|total)', Lines)
                 if(length(countStart) > 1){
                     warning("There should only one locus allele count line. Using first ")
                     countStart = countStart[1]
@@ -142,7 +142,7 @@ readFreqs = function(strPath, FSIGenFormat = TRUE, delim = ','){
             stop(paste("Couldn't open", strPath, "for reading"))
         }
     }else{ ## Curran format
-        f1 = file(strPath, "r")
+        f1 = file(strPath, open = 'r', encoding = 'UTF-8-BOM')
 
         if(isOpen(f1)){
             Lines = readLines(f1)

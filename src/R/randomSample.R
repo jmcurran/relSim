@@ -42,14 +42,14 @@ randomSample = function(nLoc, Freqs, rel = "UN", N = 10000){
         if(any(U1[,1]>U1[,2])){
             i1 = which(U1[,1]>U1[,2])
             tmp = U1[i1,1]
-            U1[i1,1] = S1[i1,2]
+            U1[i1,1] = U1[i1,2]
             U1[i1,2] = tmp
         }
 
         if(any(U2[,1]>U2[,2])){
             i1 = which(U2[,1]>U2[,2])
             tmp = U2[i1,1]
-            U2[i1,1] = S1[i1,2]
+            U2[i1,1] = U1[i1,2]
             U2[i1,2] = tmp
         }
 

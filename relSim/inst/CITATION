@@ -1,0 +1,11 @@
+citHeader("To cite relSim in publications use:")
+citEntry(
+  entry    = "manual",
+  title    = 'relSim: A tool for simulating related DNA profiles and mixtures',
+  author   = 'J. M. Curran',
+  year     = '2020-08-18',
+  note = 'R package version 0.3-2',
+  url      = 'https://github.com/jmcurran/relSim',
+  textVersion = paste("Curran, J. M. (2020) relSim: A tool for simulating related DNA profiles and mixtures. R package version 0.3-2."
+  )
+)

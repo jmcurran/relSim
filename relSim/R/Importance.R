@@ -13,7 +13,6 @@
 #' @example 
 #' \dontrun{
 #' data(USCaucs)
-#' 
 #' IS(USCaucs, numContributors = 4, maxPeaks = 3, numIterations = 1e4)
 #' }
 #'

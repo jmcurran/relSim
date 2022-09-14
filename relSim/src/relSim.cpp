@@ -930,3 +930,47 @@ List famSearch(IntegerVector& profiles, IntegerVector& siblings, IntegerVector& 
   return(results);
 }
 
+//' Compute the likehood ratio for all pairs of profiles in a database
+//' 
+//' This function takes every pair of profiles in a database of profiles and computes
+//' the likelihood ratio (LR) for a specific relationship given by \code{nCode}. That means
+//' there will be \eqn{N(N-1)/2} LRs computed for N profiles.
+//' @param profiles an integer vector of stacked profiles representing the database. This vector has \eqn{2NL} entries, where N is the number of
+//' profiles and \eqn{L} is the number of loci.
+//' @param listFreqs is a set of allele frequencies representing a particular multiplex. The function assumes that that loci in the profiles
+//' are in the same order as the loci in this list. The data structure is a \code{List} of \code{NumericVector}'s.
+//' @return a \code{NumericVector} containing the LRs. They are stored in sequential order so if for example there were three
+//' profiles, then there are 3 possible LRs, and the result vector would contain the LRs for the profile pairs (1, 2),
+//' (1, 3), and (2, 3).
+//' 
+//' @author James Curran
+//' @export
+// [[Rcpp::export]]  
+NumericVector allPairsLR(IntegerVector Profiles, 
+                         List listFreqs, 
+                         int nCode){
+    
+    int nLoci = listFreqs.size() ;
+    int nProf = Profiles.size() / (2 * nLoci);
+  
+    Rprintf("nProf: %d\n", nProf);
+    Rprintf("nLoci: %d\n", nLoci);
+    
+    NumericVector results(nProf * (nProf - 1) / 2);
+    int r = 0;
+
+    for(int i1 = 0; i1 < (nProf - 1); i1++){
+      int nOffset1 = 2 * nLoci * i1;
+      IntegerVector::const_iterator iProf1 = Profiles.begin() + nOffset1;
+      
+      for(int i2 = i1 + 1; i2 < nProf; i2++){
+        int nOffset2 = 2 * nLoci * i2;
+        IntegerVector::const_iterator iProf2 = Profiles.begin() + nOffset2; 
+        
+        results[r++] = (nCode == 1) ? lrSib(iProf1, iProf2, listFreqs) : lrPC(iProf1, iProf2, listFreqs);
+      }
+    }
+  
+  return results;
+}
+

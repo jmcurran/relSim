@@ -94,3 +94,22 @@ famSearch <- function(profiles, siblings, children, listFreqs, step) {
     .Call(`_relSim_famSearch`, profiles, siblings, children, listFreqs, step)
 }
 
+#' Compute the likehood ratio for all pairs of profiles in a database
+#' 
+#' This function takes every pair of profiles in a database of profiles and computes
+#' the likelihood ratio (LR) for a specific relationship given by \code{nCode}. That means
+#' there will be \eqn{N(N-1)/2} LRs computed for N profiles.
+#' @param profiles an integer vector of stacked profiles representing the database. This vector has \eqn{2NL} entries, where N is the number of
+#' profiles and \eqn{L} is the number of loci.
+#' @param listFreqs is a set of allele frequencies representing a particular multiplex. The function assumes that that loci in the profiles
+#' are in the same order as the loci in this list. The data structure is a \code{List} of \code{NumericVector}'s.
+#' @return a \code{List} containing two dataframes, one called \code{sibs} and one called \code{children}. Each dataframe has results from searching for
+#' either the sibling or the child in the database. For each entry there is a record of which profile gave the highest LR (and its value),
+#' and the position of the actual sibling or parent/child in the database (and its respective LR).
+#' 
+#' @author James Curran
+#' @export
+allPairsLR <- function(Profiles, listFreqs, nCode) {
+    .Call(`_relSim_allPairsLR`, Profiles, listFreqs, nCode)
+}
+

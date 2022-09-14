@@ -2,6 +2,7 @@
 
 export(IBS)
 export(IS)
+export(allPairsLR)
 export(breedFst)
 export(calcFStats)
 export(calcFst)

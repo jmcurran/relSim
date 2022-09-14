@@ -943,6 +943,14 @@ List famSearch(IntegerVector& profiles, IntegerVector& siblings, IntegerVector& 
 //' profiles, then there are 3 possible LRs, and the result vector would contain the LRs for the profile pairs (1, 2),
 //' (1, 3), and (2, 3).
 //' 
+//' @examples
+//' data("USCaucs")
+//' N = 600
+//' profs = relSim:::.randomProfiles(USCaucs$freqs, N)
+//' system.time({lr = relSim:::allPairsLR(profs, USCaucs$freqs, 1)})
+//' plot(density(log10(lr)))
+//' mean(lr > 1) ## estimate the probability that the LR is incorrectly above 1
+//' 
 //' @author James Curran
 //' @export
 // [[Rcpp::export]]  

@@ -13,19 +13,31 @@ IS(
 )
 }
 \arguments{
+\item{Freqs}{a set of allele frequencies. The format can be found in \code{\link{readFreqs}}}
+
 \item{numContributors}{the number of contributors to each mixture. Must be >= 1.}
 
-\item{maxPeaks}{either the number of peaks observed in the mixture or . such that 1 <=1 maxPeaks <= min(2 * numContribuors, numAlleles). That is, if used
-in this way maxPeaks must be between 1 and the smaller of twice the number of contributors or the number of possible alleles because you cannot 
+\item{maxPeaks}{either the number of peaks observed in the mixture or such that
+ 1 <=1 maxPeaks <= min(2 * numContribuors, numAlleles). That is, if used
+in this way maxPeaks must be between 1 and the smaller of twice the number of
+ contributors or the number of possible alleles because you cannot 
 see more peaks than there are possible alleles.}
 
 \item{numIterations}{the number of iterations to use in the importance sampling scheme.}
 
-\item{freqs}{a set of allele frequencies. The format can be found in \code{\link{readFreqs}}}
+\item{bTail}{if \code{TRUE} then the tail probability is calculated.}
 }
 \value{
-a list with as many elements as loci. If tail probabilities are selected then each locus element will be a vector of probabilities
+a list with as many elements as loci. If tail probabilities are selected 
+then each locus element will be a vector of probabilities
 }
 \description{
-Use importance sampling to determine the probability of m peaks from n contributors to a mixture
+WARNING: This function is experimental.
+}
+\examples{
+\dontrun{
+data(USCaucs)
+IS(USCaucs, numContributors = 4, maxPeaks = 3, numIterations = 1e4)
+}
+
 }

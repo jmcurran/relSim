@@ -10,7 +10,7 @@ loci and freqs. loci is a vector of the 13 CODIS STR locus names. freqs is a
 list of 13 vectors, each vector contains the allele frequencies published
 for US Caucasians in Budowle and Moretti (1999).  The raw data is available
 from
-\url{http://www.fbi.gov/about-us/lab/forensic-science-communications/fsc/july1999/dnaloci.txt}
+\url{https://www.fbi.gov/about-us/lab/forensic-science-communications/fsc/july1999/dnaloci.txt}
 }
 \description{
 This data structure

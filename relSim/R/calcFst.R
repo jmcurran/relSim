@@ -16,6 +16,7 @@
 #' population
 #' @author James M. Curran
 #' @seealso breedFst
+#' @importFrom methods is
 #' @references Weir, B.S., Genetic Data Analysis II, (1996) p.173--179,
 #' Sinauer, Sunderland, MA.
 #' @examples
@@ -27,8 +28,8 @@
 #' 
 #' @export calcFst
 calcFst = function(Pop, subPopIdx = NULL){
-    if(class(Pop) != "population")
-        stop("Pop must be of class Population")
+    if(!is(Pop, "population"))
+        stop("Pop must be of class population")
 
     nLoci = Pop$nLoci
     NumLocusAlleles = sapply(Pop$Freqs$freqs, length)

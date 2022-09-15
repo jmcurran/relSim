@@ -99,13 +99,22 @@ famSearch <- function(profiles, siblings, children, listFreqs, step) {
 #' This function takes every pair of profiles in a database of profiles and computes
 #' the likelihood ratio (LR) for a specific relationship given by \code{nCode}. That means
 #' there will be \eqn{N(N-1)/2} LRs computed for N profiles.
-#' @param profiles an integer vector of stacked profiles representing the database. This vector has \eqn{2NL} entries, where N is the number of
+#' @param Profiles an integer vector of stacked profiles representing the database. This vector has \eqn{2NL} entries, where N is the number of
 #' profiles and \eqn{L} is the number of loci.
 #' @param listFreqs is a set of allele frequencies representing a particular multiplex. The function assumes that that loci in the profiles
 #' are in the same order as the loci in this list. The data structure is a \code{List} of \code{NumericVector}'s.
-#' @return a \code{List} containing two dataframes, one called \code{sibs} and one called \code{children}. Each dataframe has results from searching for
-#' either the sibling or the child in the database. For each entry there is a record of which profile gave the highest LR (and its value),
-#' and the position of the actual sibling or parent/child in the database (and its respective LR).
+#' @param nCode if \code{1} then compute the LR for siblings, otherwise computer the LR for parent/child.
+#' @return a \code{NumericVector} containing the LRs. They are stored in sequential order so if for example there were three
+#' profiles, then there are 3 possible LRs, and the result vector would contain the LRs for the profile pairs (1, 2),
+#' (1, 3), and (2, 3).
+#' 
+#' @examples
+#' data("USCaucs")
+#' N = 600
+#' profs = relSim:::.randomProfiles(USCaucs$freqs, N)
+#' system.time({lr = relSim:::allPairsLR(profs, USCaucs$freqs, 1)})
+#' plot(density(log10(lr)))
+#' mean(lr > 1) ## estimate the probability that the LR is incorrectly above 1
 #' 
 #' @author James Curran
 #' @export

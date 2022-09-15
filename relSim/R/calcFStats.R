@@ -28,8 +28,8 @@
 #' 
 #' @export calcFStats
 calcFStats = function(Pop, subPopIdx = NULL){
-    if(class(Pop) != "population")
-        stop("Pop must be of class Population")
+    if(!is(Pop, "population"))
+        stop("Pop must be of class population")
 
     nLoci = Pop$nLoci
     NumLocusAlleles = sapply(Pop$Freqs$freqs, length)

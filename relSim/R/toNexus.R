@@ -26,7 +26,7 @@
 #' 
 #' @export toNexus
 toNexus = function(Pop, fileName = 'output.nex'){
-    if(class(Pop) != "population")
+    if(!is(Pop, "population"))
         stop("Pop must be an object of class 'population'")
 
     nLoci = Pop$nLoci

@@ -8,8 +8,8 @@ Maintainer: James M. Curran <j.curran@auckland.ac.nz>
 Description: A set of tools to explore the behaviour statistics used for forensic DNA interpretation when close relatives are involved. The package also offers some useful tools for exploring other forensic DNA situations.
 Encoding: UTF-8
 License: GPL (>= 2)
-Imports: stats, graphics, xtable, multicool, utils, rvest, stringr, xml2, pbapply
-Depends: R (>= 2.10), Rcpp (>= 1.0.3)
+Imports: stats, graphics, xtable, multicool, utils, rvest, stringr, xml2, methods
+Depends: R (>= 2.10) 
 LinkingTo: Rcpp
 LazyData: true
 RoxygenNote: 7.2.1

@@ -23,7 +23,7 @@ the profile file.}
 
 \item{sep}{a character that delimits the fields in the profile file.}
 
-\item{header}{a boolean witch is \code{TRUE} if the profile file has a column header line.}
+\item{header}{a boolean which is \code{TRUE} if the profile file has a column header line.}
 
 \item{id}{a column number indicating which column the profile id's are stored. If \code{id == -1}, then this means there is no id information.}
 

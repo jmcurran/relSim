@@ -229,9 +229,10 @@ IntegerVector randomSibs(IntegerVector ProfSib1, List listFreqs, int nBlockSize)
     
     NumericVector locusFreqs = as<NumericVector>(listFreqs[nLoc]);
     int nAlleles = locusFreqs.size();
-    IntegerVector randAlleles = sample(seq_len(nAlleles), Named("size", sampleSize),
-    Named("replace", true),
-    Named("prob", locusFreqs));
+    IntegerVector randAlleles = sample(seq_len(nAlleles), 
+                                       Named("size", sampleSize),
+                                       Named("replace", true),
+                                       Named("prob", locusFreqs));
     
     int j = 0;
     int a1, a2;
@@ -279,16 +280,18 @@ IntegerVector randomChildren(IntegerVector ProfParent, List listFreqs, int nBloc
   // reserve space for the results
   IntegerVector ProfChild(2 * nLoci * nBlockSize);
   
-  int sampleSize = (int)ceil(nBlockSize * 0.5);
+  int sampleSize = nBlockSize;//(int)ceil(nBlockSize * 0.5);
+  
   
   for(nLoc = 0; nLoc < nLoci; nLoc++){
     NumericVector U = runif(nBlockSize);
     
     NumericVector locusFreqs = as<NumericVector>(listFreqs[nLoc]);
     int nAlleles = locusFreqs.size();
-    IntegerVector randAlleles = sample(seq_len(nAlleles), Named("size", sampleSize),
-    Named("replace", true),
-    Named("prob", locusFreqs));
+    IntegerVector randAlleles = sample(seq_len(nAlleles), 
+                                       Named("size", sampleSize),
+                                       Named("replace", true),
+                                       Named("prob", locusFreqs));
     
     int j = 0;
     int a1, a2;

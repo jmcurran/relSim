@@ -11,7 +11,7 @@
 #' at each locus in the multiplex. If this is left \code{NULL}, then it is calculated from 
 #' the profile file.
 #' @param sep a character that delimits the fields in the profile file.
-#' @param header a boolean witch is \code{TRUE} if the profile file has a column header line.
+#' @param header a boolean which is \code{TRUE} if the profile file has a column header line.
 #' @param id a column number indicating which column the profile id's are stored. If \code{id == -1}, then this means there is no id information.
 #' @param discardMissing if \code{TRUE}, then all profiles which have alleles which cannot be matched to the frequency file are ommitted and returned
 #' in the return list.
@@ -84,13 +84,25 @@ readProfiles = function(fileName,
     prof[, i2] = match(prof[, i2], Alleles)
   }
   
-  rownames(prof) = 1:nrow(prof)
+  if(is.null(idCol)){
+    rownames(prof) = 1:nrow(prof)
+  }else{
+    rownames(prof) = idCol
+  }
+  
+  colnames(prof) = paste0(rep(freqs$loci, rep(2, length(freqs$loci))),
+                          rep(c("a", "b"), rep(length(freqs$loci))))
+  
   missing = !complete.cases(prof)
   if(any(missing)){
     cat(paste0("File contained ", sum(missing), " profiles with alleles that couldn't be resovled from frequency file\n"))
     cat("These profiles will be ommitted from analysis, but are returned in is object as $missing\n")
-    return(list(profiles = prof[!missing, ], freqs = freqs, missing = list(raw = rawProfiles[missing,], mapped = prof[missing, ])))
+    result = list(profiles = prof[!missing, ], freqs = freqs, missing = list(raw = rawProfiles[missing,], mapped = prof[missing, ]))
+  }else{
+    result = list(profiles = prof, freqs = freqs)
   }
   
-  return(list(profiles = rawProfiles, freqs = freqs))
+  class(result) = "relSimDB"
+  
+  return(result)
 }

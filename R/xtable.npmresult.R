@@ -1,7 +1,7 @@
 #' @importFrom utils getFromNamespace
 #' @importFrom xtable xtable
 xtable.npmresult = function(x, caption = NULL, label = NULL, align = NULL, digits = NULL, 
-                            display = NULL, bylocus = FALSE, ...){
+                            display = NULL, auto = FALSE, bylocus = FALSE, ...){
     if(bylocus){
       Loci = rownames(x$raw)
       nLoci = length(Loci)

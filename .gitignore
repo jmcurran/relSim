@@ -1,5 +1,8 @@
 .Rproj.user
 .Rhistory
 .RData
-.Ruserdata
-.relSim.Rcheck
+src/*.o
+src/*.so
+src/*.dll
+.dropbox
+.httr-oauth

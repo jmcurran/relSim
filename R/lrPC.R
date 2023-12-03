@@ -44,10 +44,11 @@ lrPC = function(parent, child, Freqs = NULL,
   }
   
   if(is.null(Freqs)){
-    loc = rep(1:length(n), n)
-    Freqs = split(f, n)
+    Freqs = list(
+      loc = rep(1:length(n), n)
+    )
+    Freqs$freqs = split(f, Freqs$loc)
   }
-  
   
   lr = .lrPC(parent, child, Freqs$freqs)
 

@@ -10,8 +10,13 @@ int profIBS(IntegerVector::const_iterator Prof){
   int nB1 = Prof[2];
   int nB2 = Prof[3];
   
-  if(nA1 == nB1 && nA2 == nB2){
-    nResult = 2;
+  // I think this works by a short circuit argument. That is, the first
+  // if should catch the cases where both alleles are equal, and so you 
+  // don't have to check for non-matching alleles in the second if.
+  // It also works because there is an assumption that the alleles are ordered
+  // however, that may not always be true
+  if((nA1 == nB1 && nA2 == nB2) || (nA1 == nB2 && nA2 == nB1)) {
+    nResult = 2; 
   }else if((nA1 == nB1) || (nA2 == nB1) || (nA1 == nB2) || (nA2 == nB2)){
     nResult = 1;
   } // else nResult is zero

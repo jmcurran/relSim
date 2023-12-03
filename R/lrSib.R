@@ -45,8 +45,10 @@ lrSib = function(sib1, sib2, Freqs  = NULL, nLoci = length(sib1)/2,
   }
   
   if(is.null(Freqs)){
-    loc = rep(1:length(n), n)
-    Freqs = split(f, n)
+    Freqs = list(
+      loc = rep(1:length(n), n)
+    )
+    Freqs$freqs = split(f, Freqs$loc)
   }
   
   
